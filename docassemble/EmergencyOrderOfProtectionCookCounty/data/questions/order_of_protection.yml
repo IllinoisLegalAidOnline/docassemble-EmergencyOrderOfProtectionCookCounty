@@ -1,7 +1,7 @@
 metadata:
-  title: Order of protection
-  short title: Order of protection
-  comment: This program helps you ask the court to order someone to stop harming or threatening you or other household members.
+  title: Emergency Order of protection - Cook County
+  short title: Emergency OP - Cook County
+  comment: This program helps you ask the court to order someone to stop harming or threatening you or other household members. Email your forms to the court. For use only in Cook County.
   authors:
     - Matt Newsted
 ---
@@ -59,13 +59,13 @@ objects:
 
 ---
 code: |
-  ilao_easy_form_title = "Order of Protection"
-  ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/order-protection"
+  ilao_easy_form_title = "Emergency Order of Protection - Cook County"
+  ilao_easy_form_url = "https://www.illinoislegalaid.org/legal-information/emergency-order-protection-cook-county"
   form_name = "Order of Protection"
   al_form_type = 'new_case'
   user_ask_role = 'plaintiff'
   github_user = 'IllinoisLegalAidOnline'
-  github_repo_name = 'docassemble-OrderOfProtection'
+  github_repo_name = 'docassemble-EmergencyOrderOfProtectionCookCounty'
   allowed_courts = ['Circuit']
 ---
 # Road map
@@ -86,29 +86,22 @@ sections:
 mandatory: True
 code: |
   nav.set_section('section_intro')
-  store_variables_snapshot(
-      persistent=True,
-      data={ "started_interview": True } )
   sees_nav_bar
-  #testing new questions
-  #property_transfer_person
-  #end testing new questions
   instructions
   whats_next
+  cook_after_hours
   accept_terms
   who_can_be_protected
   important_op_info
-  if in_illinois == False:
-    not_in_illinois
-  
+  if in_cook == False:
+    not_in_cook
+
   nav.set_section('section_basic')
   set_progress(10)
-  trial_court
   
+  trial_court_index = -1
   if jurisdiction_type.all_false():
     other_jurisdiction_location
-  if trial_court_index == -1:
-    cook_after_hours
     
   if relationship_type.all_false():
     other_relief
@@ -344,11 +337,6 @@ code: |
   set_progress(100)
   #clean_up
   forms_assembling
-  store_variables_snapshot(
-      persistent=True,
-      data={
-          "zip": showifdef("users[0].address.zip"),
-          "downloaded_forms": True } )
   get_docs_screen
 ---
 terms:
@@ -364,14 +352,16 @@ code: |
 ---
 id: welcome
 question: |
-  Order of Protection
+  Emergency Order of Protection - Cook County
 subquestion: |
-  Welcome to Illinois Legal Aid Online's **Order of Protection** Easy Form.
+  Welcome to Illinois Legal Aid Online's **Emergency Order of Protection - Cook County** Easy Form.
 
-  This program makes forms that help you ask the court to order someone to stop harming or threatening you, your children, or other household members. The Order of Protection can also require the abuser to stay away from other protected people and locations.
+  This program makes forms that help you ask the court to order someone to stop harming or threatening you, your children, or other household members. The Order of Protection can also require the abuser to stay away from other protected people and locations. The forms made by this program are only for use in Cook County, Illinois.
 
   To learn more, read ILAO's article about [**Orders of Protection**](https://www.illinoislegalaid.org/node/29806).
   
+  This program will let you email your forms to the court clerk if you want to see a judge while after hours court is in session. This is usually 9PM to 3AM from Monday to Friday and 1PM to 6PM on weekends.
+
   #### Your safety is important
   
   * If you are in immediate danger, call 911.
@@ -397,16 +387,21 @@ subquestion: |
   
   * School or daycare information, and
   * How you want the court to restrict parenting time, if any.
+  
+  To email your forms to the clerk for a remote hearing during after-hours, you also need:
+  
+  * An email address, and
+  * A safe phone number where the court coordinator can contact you.
 
   Set aside 15 to 30 minutes to finish this program. You can login and save your work to return to later. 
  
   ${ collapse_template(help_example) }  
 
-  Click on **{green words}** to learn what they mean. Some questions have a question mark in a circle ${ fa_icon("question-circle", color_css="#0dcaf0" ) } that also gives help.
+  Click on **{green words}** to learn what they mean. Some pages have a question mark in a circle ${ fa_icon("question-circle", color_css="#0dcaf0" ) } that helps explain things.
 ---
 template: help_example
 subject: |
-  **You can expand sections like this to show more information.**
+  **You can click sections like this to show more information.**
 content: |  
   This is an example of help. Click again to hide.
 ---
@@ -415,6 +410,8 @@ continue button field: whats_next
 question: |
   After you finish this program
 subquestion: |
+  ADD/UPDATE INFORMATION ABOUT emailing forms to clerk.
+  
   After you download your ${ form_name } forms, you must file them with the court clerk's office. This program does not file your ${ form_name } forms for you.
   
   You can also download "How to ask for an Order of Protection" instructions at the end of this program. The instructions can guide you through filing your forms and going to court. 
@@ -469,31 +466,32 @@ subquestion: |
   * Monday through Friday: 9:00 PM to 3:00 AM
   * Saturday and Sunday: 1:00 PM to 6:00 PM
   
-  If you want to schedule a remote hearing during these limited hours, use the [**Emergency Order of Protection - Cook County Easy Form**](https://www.illinoislegalaid.org/legal-information/emergency-order-protection-cook-county) instead. Otherwise, click **Next** to continue making your forms.
-
+  If you want to schedule a remote hearing during these limited hours, you will have the option to email your forms at the end of this program.
 ---
-id: in illinois
+id: in cook county illinois
 question: |
-  Do you want to file for an Order of Protection in Illinois?
+  Do you want to file for an Order of Protection in Cook County, Illinois?
 subquestion: |
-  You can file in Illinois if:
+  You can file in Cook County, Illinois if:
 
-  * You live in Illinois,
-  * The person you are filing against lives in Illinois,
-  * The abuse took place in Illinois, or
-  * You are in Illinois to avoid abuse elsewhere.
+  * You live in Cook County, Illinois,
+  * The person you are filing against lives in Cook County, Illinois,
+  * The abuse took place in Cook County, Illinois, or
+  * You are in Cook County, Illinois to avoid abuse elsewhere.
 fields:
-  - no label: in_illinois
+  - no label: in_cook
     datatype: yesnoradio
 ---
-id: not in illinois
-event: not_in_illinois
+id: not in cook county illinois
+event: not_in_cook
 question: |
   Sorry
 subquestion: |
-  This program is only for people who want an Order of Protection in Illinois.
+  This program is only for people who want an Order of Protection in Cook County, Illinois.
   
-  You can use the [**Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
+  If you are elsewhere in Illinois, call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate. You can also use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  
+  If you are outside Illinois, you can use the [**Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
 buttons:
   - Exit: exit
   - Restart: restart
