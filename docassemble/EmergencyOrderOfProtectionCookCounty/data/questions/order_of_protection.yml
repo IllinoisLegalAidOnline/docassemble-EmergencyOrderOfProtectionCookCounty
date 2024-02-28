@@ -106,6 +106,7 @@ code: |
   if relationship_type.all_false():
     other_relief
   users.gather(number=1)
+  users[0].birthdate
   other_parties.gather(number=1)
   if minor_kids_with_respondent:
     shared_kids.gather()
@@ -489,37 +490,37 @@ question: |
 subquestion: |
   This program is only for people who want an Order of Protection in Cook County, Illinois.
   
-  If you are elsewhere in Illinois, call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate. You can also use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  If you want to file in another Illinois county, you can use the statewide [**Order of Protection Easy Form**](https://www.illinoislegalaid.org/node/30686).
   
   If you are outside Illinois, you can use the [**Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
 buttons:
   - Exit: exit
   - Restart: restart
 ---
-id: county
-continue button field: case_county
-question: |
-  In which county will you file your ${ form_name }?
-subquestion: |
-  You can file your case in the county:
-  
-  * Where you live,
-  * Where the person who caused the abuse lives,
-  * Where the abuse occurred, or
-  * Where you are staying to avoid abuse.
-fields:
-  - no label: trial_court_index
-    datatype: integer
-    code: |
-      court_county_lookup()
-  - note: |
-      ${ collapse_template(county_lookup_help) }  
----
-template: county_lookup_help
-subject: |
-  **What if I need help finding the county?**
-content: |  
-    You can use this [**City-to-County Finder**](https://www.statsamerica.org/CityCountyFinder/) to find the county.
+#id: county
+#continue button field: case_county
+#question: |
+#  In which county will you file your ${ form_name }?
+#subquestion: |
+#  You can file your case in the county:
+#  
+#  * Where you live,
+#  * Where the person who caused the abuse lives,
+#  * Where the abuse occurred, or
+#  * Where you are staying to avoid abuse.
+#fields:
+#  - no label: trial_court_index
+#    datatype: integer
+#    code: |
+#      court_county_lookup()
+#  - note: |
+#      ${ collapse_template(county_lookup_help) }  
+#---
+#template: county_lookup_help
+#subject: |
+#  **What if I need help finding the county?**
+#content: |  
+#    You can use this [**City-to-County Finder**](https://www.statsamerica.org/CityCountyFinder/) to find the county.
 ---
 depends on:
   - trial_court_index
@@ -572,7 +573,9 @@ subquestion: |
   * Where the abuse occurred, or
   * Where you are staying to avoid abuse.
 
-  If Illinois is not the right place to ask for an Order of Protection, you can use the [**Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
+  If Cook County is not the right place in Illinois to file, you can use the statewide [**Order of Protection Easy Form**](https://www.illinoislegalaid.org/node/30686).
+  
+  If you are outside Illinois, you can use the [**Legal Services Corporation website**](https://www.lsc.gov/about-lsc/what-legal-aid/get-legal-help) to find a legal aid organization near you.
 buttons:
   - Exit: exit
   - Restart: restart
@@ -656,6 +659,14 @@ fields:
   - code: |
       users[0].name_fields()
 ---
+id: user dob
+question: |
+  When were you born?
+fields:
+  - Date of birth: users[0].birthdate
+    datatype: ThreePartsDate
+    alMax: ${ today().format("yyyy-MM-dd") }
+---
 id: respondent name
 sets:
     - other_parties[0].name.first
@@ -689,8 +700,8 @@ fields:
           You may want to update the sheriff's office when you have this information.
           % endif
   - ${other_parties[0].name.full(middle="full")}'s date of birth: other_parties[0].birthdate
-    datatype: date
-    max: ${ today().format("yyyy-MM-dd") }
+    datatype: ThreePartsDate
+    alMax: ${ today().format("yyyy-MM-dd") }
     show if: 
       variable: knows_respondent_dob
       is: exact
@@ -3682,9 +3693,19 @@ attachment:
   fields:
     - "county": ${ trial_court.address.county.upper() }
     - "civil_proceeding": True
-    - "petitioner__1": ${ users[0].name.full(middle="full") }
+    - "petitioner__1": |
+        % if users[0].birthdate != "":
+        ${ users[0].name.full(middle="full") + ", (DOB: " + users[0].birthdate + ")" }
+        % else:
+        ${ users[0].name.full(middle="full") }
+        % endif
     - "petitioner__2": ${ users[0].name.full(middle="full") }
-    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "respondent": |
+        % if knows_respondent_dob == "exact" and other_parties[0].birthdate != "":
+        ${ other_parties[0].name.full(middle="full") + ", (DOB: " + other_parties[0].birthdate + ")" }
+        % else:
+        ${ other_parties[0].name.full(middle="full") }
+        % endif
     - "case_number__1": ${ case_number }
     - "case_number__2": ${ case_number }
     - "case_number__3": ${ case_number }
