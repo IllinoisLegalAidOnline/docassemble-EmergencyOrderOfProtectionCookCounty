@@ -3569,7 +3569,7 @@ id: get docs screen
 continue button field: get_docs_screen
 continue button label: ":file-export: Email your forms to the clerk"
 question: |
-  Download
+  Download and email forms
 subquestion: |
   
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
@@ -3626,7 +3626,47 @@ content: |
   Petitioner prefers to be contacted by email.
   % endif
   
-  Notes from Petitioner to the clerk: ${ notes_to_clerk if notes_to_clerk != "" else "none" }
+  Notes from Petitioner to the clerk:  
+  ${ notes_to_clerk if notes_to_clerk != "" else "none" }
+  
+  Earlier Cook County case between the parties:  
+  % if previous_cook_case_type == "divorce" or previous_cook_case_type == "parentage":
+  % if previous_cook_case_type == "divorce":
+  Divorce 
+  else:
+  Parentage
+  % endif
+  Case number ${ previous_cook_case_number} filed on ${ format_date(previous_cook_case_date, format='MMM d, yyyy')} with Judge ${ previous_cook_case_judge }
+  % else:
+  None
+  % endif
+  
+  Other Orders of Protection in Illinois
+  % if has_other_ops:
+  % for op in other_ops:
+  % if op.state == "IL":
+  People: ${ op.name.text }  
+  Location: ${ op.state + ", " + op.county + " County"}  
+  Year: ${ op.year }  
+  % endif
+  % endfor
+  % else:
+  None
+  % endif
+  
+  Other cases in Illinois
+  % if has_other_cases:
+  % for case in other_cases:
+  % if case.state == "IL":
+  Type: ${ case.name.text }  
+  Location: ${ case.state + ", " + case.county + " County" }  
+  Year: ${ case.year }  
+  % endif
+  % endfor
+  % else:
+  None
+  % endif
+
 ---
 code: |
   recipient = "mnewsted@illinoislegalaid.org"
@@ -3709,6 +3749,7 @@ under: |
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
 objects:
+  - op_next_steps: ALDocument.using(title="Next steps", filename="next_steps.pdf", has_addendum=False)
   - op_instructions: ALDocument.using(title="Instructions", filename="instructions.pdf", has_addendum=False)
   - op_petition: ALDocument.using(title="Petition", filename="petition.pdf", has_addendum=False)
   - op_schools: ALDocument.using(title="Confidential School or Daycare", filename="confidential_schools.pdf", has_addendum=False)
@@ -3724,6 +3765,7 @@ objects:
 
 ---
 code: |
+  op_next_steps.enabled = True
   op_instructions.enabled = True
   op_petition.enabled = True
   op_petition_single_pdf_bundle.enabled = True
@@ -3776,7 +3818,7 @@ code: |
 ---
 objects:
   - op_petition_single_pdf_bundle: ALDocumentBundle.using(elements=[op_petition, additional_cases, additional_incidents], filename="petition.pdf", title="Petition for Order of Protection")
-  - al_user_bundle: ALDocumentBundle.using(elements=[op_instructions, cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, cook_sheriff_info_sheet, affidavit_pt_supervisor, efiling_exemption], filename="order_of_protection.pdf", title="All forms")
+  - al_user_bundle: ALDocumentBundle.using(elements=[op_next_steps, op_instructions, cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, cook_sheriff_info_sheet, affidavit_pt_supervisor, efiling_exemption], filename="order_of_protection.pdf", title="All forms")
   - al_court_bundle: ALDocumentBundle.using(elements=[cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, op_summons, cook_sheriff_info_sheet, efiling_exemption], filename="order_of_protection.pdf", title="Order of protection")
 
 ---
@@ -3787,6 +3829,16 @@ attachment:
   skip undefined: True
   editable: False
   pdf template file: op_instructions.pdf
+  fields:
+    - "fake": ${ "" }
+---
+attachment:
+  variable name: op_next_steps[i]
+  name: op_next_steps
+  filename: op_next_steps
+  skip undefined: True
+  editable: False
+  pdf template file: op_next_steps.pdf
   fields:
     - "fake": ${ "" }
 ---
