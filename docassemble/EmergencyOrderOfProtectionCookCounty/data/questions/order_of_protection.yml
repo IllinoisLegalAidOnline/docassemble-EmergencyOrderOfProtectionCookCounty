@@ -80,7 +80,7 @@ sections:
   - section_remedies: Other remedies
   - section_respondent: About the person who caused abuse
   - section_filing_info: Filing and service details
-  - section_download: Download
+  - section_download: Download and email forms
 ---
 # interview order block
 mandatory: True
@@ -339,6 +339,11 @@ code: |
   #clean_up
   forms_assembling
   get_docs_screen
+  clerk_email_prep
+  if clerk_email_sent_ok:
+    email_sent
+  else:
+    email_not_sent
 ---
 terms:
   - "advance written notice": |
@@ -361,8 +366,11 @@ subquestion: |
 
   To learn more, read ILAO's article about [**Orders of Protection**](https://www.illinoislegalaid.org/node/29806).
   
-  This program will let you email your forms to the court clerk if you want to see a judge while after hours court is in session. This is usually 9PM to 3AM from Monday to Friday and 1PM to 6PM on weekends.
-
+  <div class="alert alert-info" role="alert">
+    <h6 class="alert-heading">See a judge on evenings and weekends</h6>
+    <p>After hours court is open Monday to Friday from 9PM to 3AM and on Saturday and Sunday from 1PM to 6PM. If you want to see a judge during those times, you can email your forms to the court clerk at the end of this program.</p>
+  </div>
+  
   #### Your safety is important
   
   * If you are in immediate danger, call 911.
@@ -949,6 +957,7 @@ subquestion: |
 fields:
   - Emergency: eop
     datatype: yesnowide
+    default: True
     help: |
       **Emergency Order of Protection**
 
@@ -3557,13 +3566,15 @@ subquestion: |
   &nbsp;
 ---
 id: get docs screen
+continue button field: get_docs_screen
+continue button label: ":file-export: Email your forms to the clerk"
 question: |
   Download
 subquestion: |
   
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
 
-  This program does not file your ${ form_name } forms with the court. You will need to do this yourself.
+  **Note:** If you want to see an after-hours judge, click **Email your forms to the clerk**.
 
   ${ action_button_html(url_action('review_answers'), label=':edit: Make changes', color='success', size="md") }
   
@@ -3573,10 +3584,10 @@ subquestion: |
 
   ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
 
-  **Note:** This program does not file your ${ form_name } forms with the court.
+  **Note:** If you want to see an after-hours judge, click **Email your forms to the clerk**.
   
   Thank you for using ILAO Easy Forms!
-event: get_docs_screen
+#event: get_docs_screen
 under: |
   **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
@@ -3587,8 +3598,7 @@ under: |
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
-generic object: ALDocumentBundle
-template: x.send_email_template
+template: al_user_bundle.send_email_template
 subject: |
   Your forms
 content: |
@@ -3598,7 +3608,105 @@ content: |
   
   [Illinois Legal Aid Online](https://www.illinoislegalaid.org)
 ---
+template: clerk_email
+subject: |
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")}
+content: |
+  ${ users[0].name.full(middle="full") } is filing for a Petition for Order of Protection against ${other_parties[0].name.full(middle="full")}.
+  
+  Petitioner safe email address: ${ safe_email }
+  
+  % if preferred_contact == "phone":
+  Petitioner safe phone number: ${ phone_number_formatted(safe_phone_number) }
+  
+  Petitioner prefers to be contacted by phone.
+  % else:
+  Petitioner safe phone number: none listed
+  
+  Petitioner prefers to be contacted by email.
+  % endif
+  
+  Notes from Petitioner to the clerk: ${ notes_to_clerk if notes_to_clerk != "" else "none" }
+---
+code: |
+  recipient = "mnewsted@illinoislegalaid.org"
+  clerk_email_sent_ok = send_email(to=recipient, template=clerk_email)
+---
+id: get email to clerk details
+continue button field: clerk_email_prep
+continue button label: "Submit"
+question: |
+  Email forms to the clerk
+subquestion: |
+  Fill in these fields and click **Submit** to send your forms to the after-hours clerk. The phone number and email address **will not** appear on your court forms.
+  
+  Only available at these times: ... If you send your forms outside those times, the clerk may not see your forms until the next after-hours session.
+  
+  Court coordinator will contact you to let you know when you can see a judge.
+  
+  This may take a minute. We will let you know when the email was sent.
+fields:
+  - Safe email address: safe_email    
+    datatype: email
+  - Preferred method of contact: preferred_contact
+    input type: radio
+    choices:
+      - Email: email
+      - Phone: phone
+  - Safe phone number: safe_phone_number
+    datatype: al_international_phone
+    show if:
+      variable: preferred_contact
+      is: "phone"
+  - Notes for the clerk (optional): notes_to_clerk
+    input type: area
+    rows: 3
+    maxlength: 200
+    required: False
+---
+id: email confirmation page
+event: email_sent
+question: |
+  Email sent to clerk
+subquestion: |
+  Your forms were sent to the clerk. 
+  
+  If you sent them in time for after-hours court, they will contact you to set up a court hearing with the judge. If you sent them outside of that time frame, you may need to follow up.
+  
+  Read the Next steps document for what to do next. 
+  
+  How to download your forms.
+  
+  Thank you for using ILAO Easy Forms!
+under: |
+  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  % if not user_logged_in():
+  
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
+  % endif 
 
+  &nbsp;
+  ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
+---
+id: email send error
+event: email_not_sent
+question: |
+  Email error
+subquestion: |
+  Your forms were not sent to the clerk. 
+
+  Click **Back** to try again. 
+  
+  Thank you for using ILAO Easy Forms!
+under: |
+  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  % if not user_logged_in():
+  
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
+  % endif 
+
+  &nbsp;
+  ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
 objects:
   - op_instructions: ALDocument.using(title="Instructions", filename="instructions.pdf", has_addendum=False)
@@ -3669,7 +3777,7 @@ code: |
 objects:
   - op_petition_single_pdf_bundle: ALDocumentBundle.using(elements=[op_petition, additional_cases, additional_incidents], filename="petition.pdf", title="Petition for Order of Protection")
   - al_user_bundle: ALDocumentBundle.using(elements=[op_instructions, cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, cook_sheriff_info_sheet, affidavit_pt_supervisor, efiling_exemption], filename="order_of_protection.pdf", title="All forms")
-  - al_court_bundle: ALDocumentBundle.using(elements=[cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, cook_sheriff_info_sheet, efiling_exemption], filename="order_of_protection.pdf", title="Order of protection")
+  - al_court_bundle: ALDocumentBundle.using(elements=[cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, op_summons, cook_sheriff_info_sheet, efiling_exemption], filename="order_of_protection.pdf", title="Order of protection")
 
 ---
 attachment:
@@ -4306,8 +4414,18 @@ attachment:
   pdf template file: additional_incidents.pdf
   fields:
     - "county": ${ trial_court.address.county.upper() }
-    - "petitioner__1": ${ users[0].name.full(middle="full") }
-    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "petitioner__1": |
+        % if users[0].birthdate != "":
+        ${ users[0].name.full(middle="full") + ", (DOB: " + users[0].birthdate + ")" }
+        % else:
+        ${ users[0].name.full(middle="full") }
+        % endif
+    - "respondent": |
+        % if knows_respondent_dob == "exact" and other_parties[0].birthdate != "":
+        ${ other_parties[0].name.full(middle="full") + ", (DOB: " + other_parties[0].birthdate + ")" }
+        % else:
+        ${ other_parties[0].name.full(middle="full") }
+        % endif
     - "case_number__1": ${ case_number }
     - "case_number__2": ${ case_number }
     - "protect_petitioner": ${ protect_petitioner }
@@ -4347,8 +4465,18 @@ attachment:
   pdf template file: additional_cases.pdf
   fields:
     - "county": ${ trial_court.address.county.upper() }
-    - "petitioner__1": ${ users[0].name.full(middle="full") }
-    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "petitioner__1": |
+        % if users[0].birthdate != "":
+        ${ users[0].name.full(middle="full") + ", (DOB: " + users[0].birthdate + ")" }
+        % else:
+        ${ users[0].name.full(middle="full") }
+        % endif
+    - "respondent": |
+        % if knows_respondent_dob == "exact" and other_parties[0].birthdate != "":
+        ${ other_parties[0].name.full(middle="full") + ", (DOB: " + other_parties[0].birthdate + ")" }
+        % else:
+        ${ other_parties[0].name.full(middle="full") }
+        % endif
     - "case_number__1": ${ case_number }
     - "protect_petitioner": ${ protect_petitioner }
     - "protect_shared_kids": ${ protect_shared_kids }
@@ -4541,9 +4669,19 @@ attachment:
   fields:
     - "county": ${ trial_court.address.county.upper() }
     - "civil_proceeding": True
-    - "petitioner__1": ${ users[0].name.full(middle="full") }
+    - "petitioner__1": |
+        % if users[0].birthdate != "":
+        ${ users[0].name.full(middle="full") + ", (DOB: " + users[0].birthdate + ")" }
+        % else:
+        ${ users[0].name.full(middle="full") }
+        % endif
     - "petitioner__2": ${ users[0].name.full(middle="full") }
-    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "respondent": |
+        % if knows_respondent_dob == "exact" and other_parties[0].birthdate != "":
+        ${ other_parties[0].name.full(middle="full") + ", (DOB: " + other_parties[0].birthdate + ")" }
+        % else:
+        ${ other_parties[0].name.full(middle="full") }
+        % endif
     - "case_number__1": ${ case_number }
     - "case_number__2": ${ case_number }
     - "case_number__3": ${ case_number }
@@ -5043,9 +5181,19 @@ attachment:
   fields:
     - "county": ${ trial_court.address.county.upper() }
     - "civil_proceeding": True
-    - "petitioner__1": ${ users[0].name.full(middle="full") }
+    - "petitioner__1": |
+        % if users[0].birthdate != "":
+        ${ users[0].name.full(middle="full") + ", (DOB: " + users[0].birthdate + ")" }
+        % else:
+        ${ users[0].name.full(middle="full") }
+        % endif
     - "petitioner__2": ${ users[0].name.full(middle="full") }
-    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "respondent": |
+        % if knows_respondent_dob == "exact" and other_parties[0].birthdate != "":
+        ${ other_parties[0].name.full(middle="full") + ", (DOB: " + other_parties[0].birthdate + ")" }
+        % else:
+        ${ other_parties[0].name.full(middle="full") }
+        % endif
     - "case_number__1": ${ case_number }
     - "case_number__2": ${ case_number }
     - "case_number__3": ${ case_number }
@@ -5653,8 +5801,18 @@ attachment:
   editable: False
   pdf template file: cook_dv_cover_sheet.pdf
   fields:
-    - "petitioner__1": ${ users[0].name.full(middle="full") }
-    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "petitioner__1": |
+        % if users[0].birthdate != "":
+        ${ users[0].name.full(middle="full") + ", (DOB: " + users[0].birthdate + ")" }
+        % else:
+        ${ users[0].name.full(middle="full") }
+        % endif
+    - "respondent": |
+        % if knows_respondent_dob == "exact" and other_parties[0].birthdate != "":
+        ${ other_parties[0].name.full(middle="full") + ", (DOB: " + other_parties[0].birthdate + ")" }
+        % else:
+        ${ other_parties[0].name.full(middle="full") }
+        % endif
     - "case_number__1": ${ case_number }
     - "civil_proceeding": ${ True }
 
