@@ -344,6 +344,18 @@ code: |
     email_sent
   else:
     email_not_sent
+
+
+---
+# remove after testing
+id: temp final screen
+event: temp_final_screen
+question: |
+  Temp final screen
+buttons:
+  - Exit: exit
+  - Restart: restart
+
 ---
 terms:
   - "advance written notice": |
@@ -3642,7 +3654,7 @@ content: |
   % endif
   
   Other Orders of Protection in Illinois
-  % if has_other_ops:
+  % if has_other_ops == "Yes":
   % for op in other_ops:
   % if op.state == "IL":
   People: ${ op.name.text }  
@@ -3655,7 +3667,7 @@ content: |
   % endif
   
   Other cases in Illinois
-  % if has_other_cases:
+  % if has_other_cases == "Yes":
   % for case in other_cases:
   % if case.state == "IL":
   Type: ${ case.name.text }  
@@ -3669,8 +3681,8 @@ content: |
 
 ---
 code: |
-  recipient = "mnewsted@illinoislegalaid.org"
-  clerk_email_sent_ok = send_email(to=recipient, template=clerk_email)
+  recipient = "mnewsted@illinoislegalaid.org" # this is a test - change to clerk email
+  clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
 ---
 id: get email to clerk details
 continue button field: clerk_email_prep
