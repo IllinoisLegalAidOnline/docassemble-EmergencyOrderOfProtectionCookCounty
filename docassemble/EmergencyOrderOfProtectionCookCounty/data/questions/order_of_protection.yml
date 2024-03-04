@@ -86,9 +86,10 @@ sections:
 mandatory: True
 code: |
   nav.set_section('section_intro')
+  snapshot_interview_state
   sees_nav_bar
   instructions
-  whats_next
+  #whats_next
   cook_after_hours
   accept_terms
   who_can_be_protected
@@ -338,14 +339,33 @@ code: |
   set_progress(100)
   #clean_up
   forms_assembling
+  reconsider('snapshot_interview_state')
   get_docs_screen
   clerk_email_prep
   if clerk_email_sent_ok:
+    reconsider('snapshot_interview_state')
     email_sent
   else:
     email_not_sent
-
-
+  ending_screen
+---
+code: |
+  stuff_to_snapshot = {
+  	'started_interview': True, 
+  	'start_time': str(current_datetime().format_datetime()),
+  	'zip': showifdef("users[0].address.zip"),
+  	}
+  
+  try:
+  	stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
+    stuff_to_snapshot['emailed_forms'] = showifdef('clerk_email_sent_ok')
+  except:
+  	pass
+  
+  store_variables_snapshot(
+  	data=stuff_to_snapshot, persistent=True
+  	)
+  snapshot_interview_state = True
 ---
 # remove after testing
 id: temp final screen
@@ -409,7 +429,7 @@ subquestion: |
   * School or daycare information, and
   * How you want the court to restrict parenting time, if any.
   
-  To email your forms to the clerk for a remote hearing during after-hours, you also need:
+  **Important:** To email your forms to the clerk for a remote hearing during after-hours, you also need:
   
   * An email address, and
   * A safe phone number where the court coordinator can contact you.
@@ -469,9 +489,9 @@ question: |
 subquestion: |
   The person who caused the abuse is called **the Respondent**. In court, the judge will use this word to refer to the abuser. This program and the forms will do the same.
 
-  You will need to list an address on your court forms. **If you do not want the Respondent to know where you are staying, or if you do not have a home address, you can list a different mailing address where you will receive court documents.**
-
   **You will need to include an address where the Respondent can be found.** This is so the sheriff can deliver the court papers. Delivery of the court papers is called **service.** This might be where the Respondent lives, works, or a place where they stay. **Note: the Respondent will get a copy of all the court forms, except for the ones that are confidential like school or daycare location.**
+
+  You will need to list an address on your court forms. **If you do not want the Respondent to know where you are staying, or if you do not have a home address, you can list a different mailing address where you will receive court documents.**
 
   **The Order of Protection is not valid until signed by a judge.** You must go to court, either in person or remotely, where a judge will decide whether or not to grant you an Order of Protection.
 ---
@@ -488,6 +508,9 @@ subquestion: |
   * Saturday and Sunday: 1:00 PM to 6:00 PM
   
   If you want to schedule a remote hearing during these limited hours, you will have the option to email your forms at the end of this program.
+  
+  Otherwise, you can download your forms at the end to file at one of the Cook County courthouses during regular business hours.
+  
 ---
 id: in cook county illinois
 question: |
@@ -2991,6 +3014,8 @@ id: remove firearms
 question: |
   Do you want the court to order ${other_parties[0].name.full(middle="full")} to turn over their guns?
 subquestion: |
+  The court can order ${other_parties[0].name.full(middle="full")} to turn over firearms, but only after they received written notice or attended the court hearing where this is decided.
+
   % if minor_kids_with_respondent or protect_petitioner_kids:
   Reminder: If ${other_parties[0].name.full(middle="full")} threatened you or your children with a weapon, be sure to explain the threat and the weapon in the [**What happened**](${ url_action('section_incidents') }) section.
   % else:
@@ -3317,11 +3342,13 @@ subquestion: |
 
   This will not appear on the forms that will be filed with the court. It goes on the Confidential Protective Order Information Sheet for the Sheriff.
 fields:
-  - no label: service_information
+  - Service information: service_information
     input type: area
     rows: 2
     maxlength: 150
     required: False
+    help: |
+      Include as much information as possible, such as best hours to serve, type of building, etc.
 ---
 id: respondent gender
 question: |
@@ -3610,6 +3637,49 @@ under: |
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
+id: ending screen
+event: ending_screen
+question: |
+  Download forms
+subquestion: |
+  
+  Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+
+  % if clerk_email_sent_ok:
+  **Note:** Your forms were already emailed to the clerk.
+  % else:
+  **Note:** Your forms were not emailed to the clerk.
+  % endif
+
+  ${ action_button_html(url_action('review_answers'), label=':edit: Make changes', color='success', size="md") }
+  
+  ${ al_user_bundle.download_list_html() }
+
+  &nbsp;
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+  % if clerk_email_sent_ok:
+  **Note:** Your forms were already emailed to the clerk.
+  % else:
+  **Note:** Your forms were not emailed to the clerk.
+  % endif
+
+  Thank you for using ILAO Easy Forms!
+under: |
+  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  % if not user_logged_in():
+  
+  [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
+  % endif 
+
+  &nbsp;
+  ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
+buttons:
+  - Exit: exit
+  - Restart: restart
+---
+
 template: al_user_bundle.send_email_template
 subject: |
   Your forms
@@ -3692,11 +3762,13 @@ question: |
 subquestion: |
   Fill in these fields and click **Submit** to send your forms to the after-hours clerk. The phone number and email address **will not** appear on your court forms.
   
-  Only available at these times: ... If you send your forms outside those times, the clerk may not see your forms until the next after-hours session.
+  **Note:** It may take up to an hour or longer after you email your forms before a judge is ready to see you. Court staff will provide you with the after-hours Zoom information when it is time for your hearing. If you are not available when they contact you, your hearing may be rescheduled to another time.
   
-  Court coordinator will contact you to let you know when you can see a judge.
+  After-hours court is only available at these times: (How to handle early filers?) If you send your forms outside those times, the clerk may not see your forms until the next after-hours session.
+
+  When you email your Order of Protection forms, your case will be at the 555 W. Harrison, Chicago courthouse. If you have a Domestic Relations case in Cook County, your Order of Protection case will be moved to the Daley Center or suburban district courthouse of your Domestic Relations case.
   
-  This may take a minute. We will let you know when the email was sent.
+  The first return date will be at this courthouse, either in-person or remote. If you live in suburban Cook County, you can request a transfer from the 555 W. Harrison judge on that first return date.
 fields:
   - Safe email address: safe_email    
     datatype: email
@@ -3717,18 +3789,20 @@ fields:
     required: False
 ---
 id: email confirmation page
-event: email_sent
+continue button field: email_sent
 question: |
   Email sent to clerk
 subquestion: |
   Your forms were sent to the clerk. 
   
   If you sent them in time for after-hours court, they will contact you to set up a court hearing with the judge. If you sent them outside of that time frame, you may need to follow up.
-  
-  Read the Next steps document for what to do next. 
-  
-  How to download your forms.
-  
+
+  **Important:** Read the "Next steps" document for what to do next. 
+
+  If you did not download your forms yet, click **Next**.
+
+  After you email your forms to the clerk, changes made to answers in this program «.b»will not«.be» appear on your forms.
+
   Thank you for using ILAO Easy Forms!
 under: |
   **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
@@ -3741,13 +3815,13 @@ under: |
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
 id: email send error
-event: email_not_sent
+continue button field: email_not_sent
 question: |
   Email error
 subquestion: |
   Your forms were not sent to the clerk. 
 
-  Click **Back** to try again. 
+  Click **Back** to try again or download your forms. 
   
   Thank you for using ILAO Easy Forms!
 under: |
@@ -3831,7 +3905,7 @@ code: |
 objects:
   - op_petition_single_pdf_bundle: ALDocumentBundle.using(elements=[op_petition, additional_cases, additional_incidents], filename="petition.pdf", title="Petition for Order of Protection")
   - al_user_bundle: ALDocumentBundle.using(elements=[op_next_steps, op_instructions, cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, cook_sheriff_info_sheet, affidavit_pt_supervisor, efiling_exemption], filename="order_of_protection.pdf", title="All forms")
-  - al_court_bundle: ALDocumentBundle.using(elements=[cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, op_summons, cook_sheriff_info_sheet, efiling_exemption], filename="order_of_protection.pdf", title="Order of protection")
+  - al_court_bundle: ALDocumentBundle.using(elements=[efiling_exemption, cook_sheriff_info_sheet, op_summons, emergency_op, op_schools, op_petition_single_pdf_bundle, cook_dv_cover_sheet], filename="order_of_protection.pdf", title="Order of protection")
 
 ---
 attachment:
