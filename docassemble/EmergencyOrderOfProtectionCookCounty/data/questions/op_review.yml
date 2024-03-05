@@ -15,13 +15,6 @@ review:
     button: |
       **Your name:**
       ${users[0].name.full(middle="full")}
-  - Edit: 
-      - trial_court_index
-      - recompute:
-        - trial_court
-    button: |
-      **County where you will file:**
-      ${ trial_court.address.county }
   - Edit: jurisdiction_type
     button: |
       **Filing in ${ trial_court.address.county } County because:**
@@ -1893,13 +1886,6 @@ review:
     button: |
       **Your name:**
       ${users[0].name.full(middle="full")}
-  - Edit: 
-      - trial_court_index
-      - recompute:
-        - trial_court
-    button: |
-      **County where you will file:**
-      ${ trial_court.address.county }
   - Edit: jurisdiction_type
     button: |
       **Filing in ${ trial_court.address.county } County because:**
