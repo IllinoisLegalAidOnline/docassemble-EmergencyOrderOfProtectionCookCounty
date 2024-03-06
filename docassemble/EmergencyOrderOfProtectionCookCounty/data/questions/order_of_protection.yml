@@ -342,6 +342,7 @@ code: |
   reconsider('snapshot_interview_state')
   get_docs_screen
   clerk_email_prep
+  are_you_sure
   if clerk_email_sent_ok:
     reconsider('snapshot_interview_state')
     email_sent
@@ -3751,7 +3752,7 @@ content: |
 
 ---
 code: |
-  recipient = "mnewsted@illinoislegalaid.org" # this is a test - change to clerk email
+  recipient = "renata.stiehl@cookcountyil.gov" # this is a test - change to clerk email
   clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
 ---
 id: get email to clerk details
@@ -3787,6 +3788,15 @@ fields:
     rows: 3
     maxlength: 200
     required: False
+---
+id: are you sure
+continue button field: are_you_sure
+question: |
+  Are you sure you want to email your forms to the clerk now?
+subquestion: |
+  This is a placeholder.
+  
+  We will add a warning that includes after-hours court availability and options.
 ---
 id: email confirmation page
 continue button field: email_sent
