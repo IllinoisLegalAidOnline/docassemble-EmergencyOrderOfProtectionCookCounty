@@ -3764,7 +3764,7 @@ subquestion: |
   
   **Note:** It may take up to an hour or longer after you email your forms before a judge is ready to see you. Court staff will provide you with the after-hours Zoom information when it is time for your hearing. If you are not available when they contact you, your hearing may be rescheduled to another time.
   
-  After-hours court is only available at these times: (How to handle early filers?) If you send your forms outside those times, the clerk may not see your forms until the next after-hours session.
+  After-hours court is only available at these times: **(How to handle early filers?)** If you send your forms outside those times, the clerk may not see your forms until the next after-hours session.
 
   When you email your Order of Protection forms, your case will be at the 555 W. Harrison, Chicago courthouse. If you have a Domestic Relations case in Cook County, your Order of Protection case will be moved to the Daley Center or suburban district courthouse of your Domestic Relations case.
   
@@ -3799,9 +3799,9 @@ subquestion: |
 
   **Important:** Read the "Next steps" document for what to do next. 
 
-  If you did not download your forms yet, click **Next**.
+  If you did not download your forms yet, click **Next**. It may take a minute to get to the next screen. You do not need to refresh.
 
-  After you email your forms to the clerk, changes made to answers in this program «.b»will not«.be» appear on your forms.
+  After you email your forms to the clerk, changes made to answers in this program **will not** appear on your forms.
 
   Thank you for using ILAO Easy Forms!
 under: |
@@ -3845,7 +3845,7 @@ objects:
   - plenary_op: ALDocument.using(title="Plenary Order of Protection (draft)", filename="plenary_op.pdf", has_addendum=False)
   - op_summons: ALDocument.using(title="Summons", filename="summons.pdf", has_addendum=False)
   - affidavit_pt_supervisor: ALDocument.using(title="Affidavit of Parenting Time Supervisor", filename="affidavit_pt_supervisor.pdf", has_addendum=False)
-  - efiling_exemption: ALDocument.using(title="E-filing exemption (optional)", filename="e-filing_exemption.pdf", has_addendum=False)
+  - efiling_exemption: ALDocument.using(title="E-filing exemption", filename="e-filing_exemption.pdf", has_addendum=False)
   - cook_dv_cover_sheet: ALDocument.using(title="Domestic Violence Cover Sheet", filename="cook_dv_cover_sheet.pdf", has_addendum=False)
   - cook_sheriff_info_sheet: ALDocument.using(title="Confidential Sheriff Information Sheet", filename="cook_sheriff_info_sheet.pdf", has_addendum=False)
 
