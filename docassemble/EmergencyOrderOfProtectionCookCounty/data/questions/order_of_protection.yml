@@ -352,13 +352,21 @@ code: |
 ---
 code: |
   stuff_to_snapshot = {
-  	'started_interview': True, 
   	'start_time': str(current_datetime().format_datetime()),
-  	'zip': showifdef("users[0].address.zip"),
+  	'started_interview': True, 
   	}
-  
+
+  try:
+  	stuff_to_snapshot['zip'] = users[0].address.zip
+  except:
+  	pass
+
   try:
   	stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
+  except:
+  	pass
+
+  try:
     stuff_to_snapshot['emailed_forms'] = showifdef('clerk_email_sent_ok')
   except:
   	pass
@@ -367,6 +375,7 @@ code: |
   	data=stuff_to_snapshot, persistent=True
   	)
   snapshot_interview_state = True
+  
 ---
 # remove after testing
 id: temp final screen
@@ -399,7 +408,7 @@ subquestion: |
 
   To learn more, read ILAO's article about [**Orders of Protection**](https://www.illinoislegalaid.org/node/29806).
   
-  <div class="alert alert-info" role="alert">
+  <div class="alert alert-info ilao-info" role="alert">
     <h6 class="alert-heading">See a judge on evenings and weekends</h6>
     <p>After hours court is open Monday to Friday from 9PM to 3AM and on Saturday and Sunday from 1PM to 6PM. If you want to see a judge during those times, you can email your forms to the court clerk at the end of this program.</p>
   </div>
@@ -663,9 +672,10 @@ fields:
       - The abuser is a family or household member of my adopted child, or of my prospective adopted child.: a
       - The abuser is a family or household member of a child that I am the legally-appointed custodian of.: l
 validation code: |
-  if (relationship_type['se'] == True or relationship_type['xs'] == True) and relationship_type['cc'] == True:
-    validation_error("You have both married (spouse or ex-spouse) and never married options selected. Please adjust your answers.")
-
+  if relationship_type['se'] == True and relationship_type['cc'] == True:
+    validation_error("You have both married (spouse) and never married options selected. Please adjust your answers.")
+  if relationship_type['xs'] == True and relationship_type['cc'] == True:
+    validation_error("You have both formerly married (ex-spouse) and never married options selected. Please adjust your answers.")
 ---
 # removed after relationship answers reworded
 template: relationship_example
