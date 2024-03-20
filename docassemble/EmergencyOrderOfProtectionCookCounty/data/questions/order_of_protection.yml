@@ -17,7 +17,8 @@ modules:
 ---
 default screen parts:
   under: |
-    **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+    ###### **Worried about doing this on your own?**  
+    ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
     % if not user_logged_in():
     
     [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} **Sign in**](${url_of('login', next=interview_url())}) or [**create**](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -430,7 +431,7 @@ question: |
 subquestion: |
   To use this program you will need to know: 
 
-  * A mailing address where the court can contact you,
+  * A safe mailing address where the court can contact you,
   * Information about people you want to protect,
   * Details about the abuser, including where they can be found,
   * Details about the abuse and when it happened,
@@ -444,7 +445,7 @@ subquestion: |
   
   **Important:** To email your forms to the clerk for a remote hearing during after-hours, you also need:
   
-  * An email address, and
+  * A safe email address, and
   * A safe phone number where the court coordinator can contact you.
 
   Set aside 15 to 30 minutes to finish this program. You can login and save your work to return to later. 
@@ -504,7 +505,7 @@ subquestion: |
 
   **You will need to include an address where the Respondent can be found.** This is so the sheriff can deliver the court papers. Delivery of the court papers is called **service.** This might be where the Respondent lives, works, or a place where they stay. **Note: the Respondent will get a copy of all the court forms, except for the ones that are confidential like school or daycare location.**
 
-  You will need to list an address on your court forms. **If you do not want the Respondent to know where you are staying, or if you do not have a home address, you can list a different mailing address where you will receive court documents.**
+  You will need to list an address on your court forms. **If you do not want the Respondent to know where you are staying, or if you do not have a home address, you can list a different safe mailing address where you will receive court documents.**
 
   **The Order of Protection is not valid until signed by a judge.** You must go to court, either in person or remotely, where a judge will decide whether or not to grant you an Order of Protection.
 ---
@@ -519,6 +520,8 @@ subquestion: |
 
   * Monday through Friday: 9:00 PM to 3:00 AM
   * Saturday and Sunday: 1:00 PM to 6:00 PM
+  
+  **Note:** After-hours court is closed on [**Legal Court Holidays**](https://www.cookcountycourt.org/ABOUT-THE-COURT/Legal-Court-Holidays). 
   
   If you want to schedule a remote hearing during these limited hours, you will have the option to email your forms at the end of this program.
   
@@ -1091,7 +1094,18 @@ question: |
 subquestion: |
   Are there now, or have there ever been, any other court cases (civil or criminal) involving ${other_parties[0].name.full(middle="full")} and you or other people you want to protect in this Order?
   
-  Examples include divorce, custody, child support, paternity, parenting time, guardianship, adoption, or abuse and neglect cases.
+  Examples include:
+  
+  * Divorce
+  * Custody
+  * Child support
+  * Paternity or parentage
+  * Parenting time
+  * Guardianship
+  * Adoption
+  * Abuse and neglect
+  * Domestic battery
+  * Violation of an Order of Protection.
   
   Note: do not include other Orders of Protection.
 fields:
@@ -1109,7 +1123,18 @@ question: |
 fields:
   - Type of court case: other_cases[i].name.text
     help: |
-      Examples include divorce, custody, child support, paternity, parenting time, guardianship, adoption, or abuse and neglect cases.
+      Examples include:
+      
+      * Divorce
+      * Custody
+      * Child support
+      * Paternity or parentage
+      * Parenting time
+      * Guardianship
+      * Adoption
+      * Abuse and neglect
+      * Domestic battery
+      * Violation of an Order of Protection.
   - State: other_cases[i].state
     code: |
       states_list()
@@ -1205,6 +1230,8 @@ subquestion: |
   
   * What ${other_parties[0].name.full(middle="full")} did,
   * What ${other_parties[0].name.full(middle="full")} said,
+  * Where the abuse happened,
+  * How the abuse happened, such as in person, by phone or text, etc.,
   * Who was there when the abuse happened, and
   * The effects the abuse had on you, other survivors, and anyone else who was there. It is important to mention any children that were present or were affected by the abuse.
   
@@ -1875,6 +1902,8 @@ fields:
 id: parentage method
 question: |
   How was legal parentage of your minor children with ${other_parties[0].name.full(middle="full")} established?
+subquestion: |
+  Check all that apply.
 fields:
   - We signed and filed a Voluntary Acknowledgment of Paternity, also called a VAP.: parentage_vap 
     datatype: yesnowide
@@ -2718,6 +2747,8 @@ fields:
 id: any pets to protect
 question: |
   Do you want the court to give you possession of all family pets or other animals?
+subquestion: |
+  The court can order ${other_parties[0].name.full(middle="full")} to stay away from the pets and forbid them from taking, hiding, or harming the pets.
 fields:
   - no label: possession_of_animals
     datatype: yesnoradio
@@ -2896,6 +2927,8 @@ question: |
   Do you want ${other_parties[0].name.full(middle="full")} to pay temporary child support?
 subquestion: |
   The court can order temporary child support only after ${other_parties[0].name.full(middle="full")} has received written notice or attended the court hearing where this is decided.
+  
+  **Important:** Even if the judge can't award temporary support at the first hearing, it is easier to ask for it now. Otherwise, you will have to amend your Petition later.
 fields:
   - no label: temp_child_support
     datatype: yesnoradio
@@ -2995,14 +3028,14 @@ question: |
   Is ${other_parties[0].name.full(middle="full")} a threat to your physical safety?
   % endif
 subquestion: |
-  Just knowing that ${other_parties[0].name.full(middle="full")} has a weapon can be a threat if you are afraid they could use it against you.
+  Just knowing that ${other_parties[0].name.full(middle="full")} has a **weapon** can be a threat if you are afraid they could use it against you.
 
   ${ collapse_template(dv_risk_factors) }
 
   % if minor_kids_with_respondent or protect_petitioner_kids:
-  Note: If ${other_parties[0].name.full(middle="full")} threatened you or your children with a weapon, be sure to explain the threats, the weapon and its location in the [**What happened**](${ url_action('section_incidents') }) section. Threats are incidents of abuse that are important to your case.
+  Note: If ${other_parties[0].name.full(middle="full")} threatened you or your children with a weapon, be sure to explain the threats, the weapon and its location in the [**What happened**](${ url_action('section_incidents') }) section. Describe the weapon as best you can. Threats are incidents of abuse that are important to your case.
   % else:
-  Note: If ${other_parties[0].name.full(middle="full")} threatened you with a weapon, be sure to explain the threats, the weapon and its location in the [**What happened**](${ url_action('section_incidents') }) section. Threats are incidents of abuse that are important to your case.
+  Note: If ${other_parties[0].name.full(middle="full")} threatened you with a weapon, be sure to explain the threats, the weapon and its location in the [**What happened**](${ url_action('section_incidents') }) section. Describe the weapon as best you can. Threats are incidents of abuse that are important to your case.
   % endif
 fields:
   - no label: firearms_threat
@@ -3145,23 +3178,23 @@ content: |
 ---
 id: phone number
 question: |
-  What phone number do you want to list on your court forms?
+  What safe phone number do you want to list on your court forms?
 subquestion: |
   The court might need to contact you about this case.
 
   **This phone number will appear on your court forms.** If you do not want to list a phone number on your forms, leave this blank.
 fields:
-  - Phone: users[0].phone_number
+  - Safe phone number: users[0].phone_number
     datatype: al_international_phone
     required: False
 ---    
 id: notice by email
 question: |
-  Do you have an email address?
+  Do you have a safe email address?
 subquestion: |
-  If you have an email address, you must list it so the court and other parties can contact you about this case.
+  If you have a safe email address, you must list it so the court and other parties can contact you about this case.
 fields:
-  - "Email?": users[0].email_notice
+  - Have a safe email?: users[0].email_notice
     datatype: yesnoradio
 ---
 id: email address
@@ -3178,7 +3211,7 @@ subquestion: |
   
   Be sure to check your email daily, otherwise you may miss important information about your case.
 fields:
-  - Email address: users[0].email    
+  - Safe email address: users[0].email    
     datatype: email
 ---
 id: service address choice
@@ -3624,8 +3657,9 @@ continue button label: ":file-export: Email your forms to the clerk"
 question: |
   Download and email forms
 subquestion: |
-  
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+
+  You will not receive an order from the court until you see a judge.
 
   **Note:** If you want to see an after-hours judge, click **Email your forms to the clerk**.
 
@@ -3642,7 +3676,8 @@ subquestion: |
   Thank you for using ILAO Easy Forms!
 #event: get_docs_screen
 under: |
-  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### **Worried about doing this on your own?**  
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -3656,8 +3691,9 @@ event: ending_screen
 question: |
   Download forms
 subquestion: |
-  
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
+
+  You will not receive an order from the court until you see a judge.
 
   % if clerk_email_sent_ok:
   **Note:** Your forms were already emailed to the clerk.
@@ -3681,7 +3717,8 @@ subquestion: |
 
   Thank you for using ILAO Easy Forms!
 under: |
-  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### **Worried about doing this on your own?**  
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -3869,7 +3906,8 @@ subquestion: |
 
   Thank you for using ILAO Easy Forms!
 under: |
-  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### **Worried about doing this on your own?**  
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -3889,7 +3927,8 @@ subquestion: |
   
   Thank you for using ILAO Easy Forms!
 under: |
-  **Worried about doing this on your own?** Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### **Worried about doing this on your own?**  
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
