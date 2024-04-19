@@ -93,7 +93,6 @@ code: |
   snapshot_interview_state
   sees_nav_bar
   instructions
-  #whats_next
   cook_after_hours
   accept_terms
   who_can_be_protected
@@ -459,17 +458,6 @@ subject: |
   **You can click sections like this to show more information.**
 content: |  
   This is an example of help. Click again to hide.
----
-id: whats next
-continue button field: whats_next
-question: |
-  After you finish this program
-subquestion: |
-  ADD/UPDATE INFORMATION ABOUT emailing forms to clerk.
-  
-  After you download your ${ form_name } forms, you must file them with the court clerk's office. This program does not file your ${ form_name } forms for you.
-  
-  You can also download "How to ask for an Order of Protection" instructions at the end of this program. The instructions can guide you through filing your forms and going to court. 
 ---
 template: get_legal_help
 subject: |
@@ -3856,7 +3844,7 @@ id: are you sure
 question: |
   Are you sure you want to email your forms to the clerk now?
 subquestion: |
-  If you email your forms to the clerk, court staff will provide you with the after-hours Zoom information when it is time for your hearing during the session below. [**Download and install the Zoom app**](https://zoom.us/download) on your phone or computer before your after-hours court hearing.
+  If you email your forms to the clerk, court staff will provide you with the after-hours Zoom information when it is time for your hearing during the session below. [**Download and install the Zoom app**](https://zoom.us/download) on your phone or computer **before** your after-hours court hearing. Use the link in the "Next steps" document to test Zoom before your remote court hearing.
 
   Next available after-hours session:  
   % if new_ah_open.dow > 5:
