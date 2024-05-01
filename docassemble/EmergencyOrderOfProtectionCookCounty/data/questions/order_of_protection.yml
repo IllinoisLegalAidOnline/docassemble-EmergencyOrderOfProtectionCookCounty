@@ -3797,7 +3797,7 @@ content: |
 
 ---
 code: |
-  recipient = "renata.stiehl@cookcountyil.gov" # this is a test - change to clerk email
+  recipient = "ilaoafterhours@cookcountycourt.com"
   clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
 ---
 id: get email to clerk details
