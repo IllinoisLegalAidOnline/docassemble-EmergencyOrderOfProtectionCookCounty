@@ -3797,7 +3797,7 @@ content: |
 
 ---
 code: |
-  recipient = "ilaoafterhours@cookcountycourt.com"
+  recipient = "mnewsted@illinoislegalaid.org" # update with cook email variable
   clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
 ---
 id: get email to clerk details
