@@ -3747,11 +3747,11 @@ content: |
   % if preferred_contact == "phone":
   Petitioner safe phone number: ${ phone_number_formatted(safe_phone_number) }
   
-  Petitioner prefers to be contacted by phone.
+  Petitioner prefers to be contacted by **phone**.
   % else:
   Petitioner safe phone number: none listed
   
-  Petitioner prefers to be contacted by email.
+  Petitioner prefers to be contacted by **email**.
   % endif
   
   Notes from Petitioner to the clerk:  
@@ -3769,12 +3769,12 @@ content: |
   None
   % endif
   
-  Other Orders of Protection in Illinois
+  Other Orders of Protection in Illinois:
   % if has_other_ops == "Yes":
   % for op in other_ops:
   % if op.state == "IL":
   People: ${ op.name.text }  
-  Location: ${ op.state + ", " + op.county + " County"}  
+  Location: ${ op.county + " County, "+ op.state }  
   Year: ${ op.year }  
   % endif
   % endfor
@@ -3782,12 +3782,12 @@ content: |
   None
   % endif
   
-  Other cases in Illinois
+  Other cases in Illinois:
   % if has_other_cases == "Yes":
   % for case in other_cases:
   % if case.state == "IL":
   Type: ${ case.name.text }  
-  Location: ${ case.state + ", " + case.county + " County" }  
+  Location: ${ case.county + " County, " + case.state }  
   Year: ${ case.year }  
   % endif
   % endfor
@@ -3797,7 +3797,7 @@ content: |
 
 ---
 code: |
-  recipient = "mnewsted@illinoislegalaid.org" # update with cook email variable
+  recipient = get_config('cook after hours email')
   clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
 ---
 id: get email to clerk details
