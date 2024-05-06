@@ -71,6 +71,7 @@ code: |
   github_user = 'IllinoisLegalAidOnline'
   github_repo_name = 'docassemble-EmergencyOrderOfProtectionCookCounty'
   allowed_courts = ['Circuit']
+  cook_instructions_warning = "IMPORTANT: Read the 'Next steps' document first. Some of these instructions do not apply to Cook County after-hours filing."
 ---
 # Road map
 sections:
@@ -90,8 +91,8 @@ sections:
 mandatory: True
 code: |
   nav.set_section('section_intro')
-  snapshot_interview_state
   sees_nav_bar
+  snapshot_start
   instructions
   cook_after_hours
   accept_terms
@@ -342,12 +343,12 @@ code: |
   set_progress(100)
   #clean_up
   forms_assembling
-  reconsider('snapshot_interview_state')
+  snapshot_forms
   get_docs_screen
   if confirm_email_send_now:
     clerk_email_prep
     if clerk_email_sent_ok:
-      reconsider('snapshot_interview_state')
+      snapshot_email
       email_sent
     else:
       email_not_sent
@@ -358,27 +359,30 @@ code: |
   	'start_time': str(current_datetime().format_datetime()),
   	'started_interview': True, 
   	}
+    
+  stuff_to_snapshot['zip'] = showifdef('users[0].address.zip')
 
-  try:
-  	stuff_to_snapshot['zip'] = users[0].address.zip
-  except:
-  	pass
+  stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
 
-  try:
-  	stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
-  except:
-  	pass
-
-  try:
-    stuff_to_snapshot['emailed_forms'] = showifdef('clerk_email_sent_ok')
-  except:
-  	pass
+  stuff_to_snapshot['emailed_forms'] = showifdef('clerk_email_sent_ok')
   
   store_variables_snapshot(
   	data=stuff_to_snapshot, persistent=True
   	)
   snapshot_interview_state = True
-  
+---
+code: |
+  snapshot_interview_state
+  snapshot_start = True  
+---
+code: |
+  reconsider('snapshot_interview_state')
+  snapshot_forms = True
+---
+code: |
+  reconsider('snapshot_interview_state')
+  snapshot_email = True 
+---  
 ---
 # remove after testing
 id: temp final screen
@@ -3143,11 +3147,19 @@ id: e-signature
 question: |
   Do you want to add your e-signature to your Petition for Order of Protection?
 subquestion: |
-  This program can put “**/s/ ${users[0].name.full(middle='full')}**” where you would sign your name. The court will accept this as your signature.
+  This program can put "**/s/ ${users[0].name.full(middle='full')}**" where you would sign your name. The court will accept this as your signature.
 
-  If you do not add your **{e-signature}**, you must sign your paper form before you file it.
+  If you do not add your **{e-signature}**, you must sign your paper forms before you file them.
 
-  ${ collapse_template(signature_help) }  
+  <div class="alert alert-info ilao-info" role="alert">
+    <h6 class="alert-heading">What it means to sign your forms</h6>
+    <p>By signing your <i>Petition for Order of Protection</i>, you are certifying that:</p>
+    <p><ul>
+      <li>Everything on the forms is true and correct, and</li>
+      <li>You understand that making a false statement on the form is perjury, which can result in criminal penalties.</li>
+    </ul></p>
+  <p>See the <a href="https://www.ilga.gov/legislation/ilcs/documents/073500050k1-109.htm"><b>Code of Civil Procedure, 735 ILCS 5/1-109</b></a> for more information.</p>
+  </div>
 
   Note: If you are going to email your forms to the after-hours court clerk, select **Yes**.
 fields:
@@ -4046,6 +4058,10 @@ attachment:
   editable: False
   pdf template file: op_instructions.pdf
   fields:
+    - "cook_eop_warning__1": ${ cook_instructions_warning } 
+    - "cook_eop_warning__2": ${ cook_instructions_warning } 
+    - "cook_eop_warning__3": ${ cook_instructions_warning } 
+    - "cook_eop_warning__4": ${ cook_instructions_warning } 
     - "fake": ${ "" }
 ---
 attachment:
