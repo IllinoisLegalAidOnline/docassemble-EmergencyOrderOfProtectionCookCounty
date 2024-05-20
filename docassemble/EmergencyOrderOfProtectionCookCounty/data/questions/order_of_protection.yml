@@ -1193,6 +1193,8 @@ subquestion: |
   
   * What ${other_parties[0].name.full(middle="full")} did,
   * What ${other_parties[0].name.full(middle="full")} said,
+  * Where the abuse happened,
+  * How the abuse happened, such as in person, by phone or text, etc.,
   * Who was there when the abuse happened, and
   * The effects the abuse had on you, other survivors, and anyone else who was there. It is important to mention any children that were present or were affected by the abuse.
   
