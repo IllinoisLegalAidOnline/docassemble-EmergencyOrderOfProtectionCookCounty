@@ -93,6 +93,11 @@ code: |
   nav.set_section('section_intro')
   sees_nav_bar
   snapshot_start
+  lhi_transition # remove 30 days after public launch
+  # demo start
+  self_preparation # move to end of program and put answers into email to clerk
+  clerk_email_prep # remove from early step - just here for demo
+  # demo end
   instructions
   cook_after_hours
   accept_terms
@@ -346,6 +351,7 @@ code: |
   snapshot_forms
   get_docs_screen
   if confirm_email_send_now:
+    self_preparation  
     clerk_email_prep
     if clerk_email_sent_ok:
       snapshot_email
@@ -426,6 +432,20 @@ subquestion: |
   * If you need to exit this program, click the red **Escape** button at the top of the screen.
   * Learn about [**safety while using the Internet**](https://www.thehotline.org/help/tech-social-media-safety/).
 field: sees_nav_bar
+---
+id: lhi hotdocs transition info
+continue button field: lhi_transition
+question: |
+  Note about this new program
+subquestion: |
+  We've updated this program so that it is easier-to-use and mobile-friendly.
+
+  **Note:** The old program will be retired July 9, 2024. If you have saved answers on that version of the program, you can get to them by visiting [**LawHelp Interactive**](https://lawhelpinteractive.org/Interview/InterviewHome?templateId=8207). 
+
+  The earlier version of the program looked like this:
+  
+  [FILE hotdocs_eop.png, 100%, Previous Emergency Order of Protection program]
+
 ---
 id: instructions
 continue button field: instructions
@@ -549,31 +569,6 @@ subquestion: |
 buttons:
   - Exit: exit
   - Restart: restart
----
-#id: county
-#continue button field: case_county
-#question: |
-#  In which county will you file your ${ form_name }?
-#subquestion: |
-#  You can file your case in the county:
-#  
-#  * Where you live,
-#  * Where the person who caused the abuse lives,
-#  * Where the abuse occurred, or
-#  * Where you are staying to avoid abuse.
-#fields:
-#  - no label: trial_court_index
-#    datatype: integer
-#    code: |
-#      court_county_lookup()
-#  - note: |
-#      ${ collapse_template(county_lookup_help) }  
-#---
-#template: county_lookup_help
-#subject: |
-#  **What if I need help finding the county?**
-#content: |  
-#    You can use this [**City-to-County Finder**](https://www.statsamerica.org/CityCountyFinder/) to find the county.
 ---
 depends on:
   - trial_court_index
@@ -1203,7 +1198,7 @@ subquestion: |
   For repeated abuse, you can say things like "weekly" for the date or "anytime I work late" for the time. 
 
 fields:
-  - Date: incidents[i].date
+  - Date (month and year): incidents[i].date
     maxlength: 20
     help: |
       If you don't remember the exact date, enter the month and year. Use abbreviations if needed.
@@ -1236,7 +1231,7 @@ subquestion: |
   For repeated abuse, you can say things like "weekly" for the date or "anytime I work late" for the time. 
 
 fields:
-  - Date: incidents[0].date
+  - Date (month and year): incidents[0].date
     maxlength: 20
     help: |
       If you don't remember the exact date, enter the month and year. Use abbreviations if needed.
@@ -1800,7 +1795,6 @@ subquestion: |
 fields:
   - School name: same_school_name
     maxlength: 50
-
 ---
 id: minor respondent parents help
 question: |
@@ -1814,7 +1808,6 @@ fields:
       - Yes: Yes
       - No: No
       - Does not apply: dna
-
 ---
 id: minor respondent parent info
 question: |
@@ -2530,7 +2523,6 @@ fields:
   - "Any other items?": petitioner_personal_property.there_is_another
     datatype: yesnoradio
 ---
-
 depends on: 
   - petitioner_personal_property[i].respo_has
 code: |
@@ -2861,7 +2853,6 @@ code: |
   if cell_numbers.number_gathered() >= 4:
     cell_numbers.there_is_another = False
 ---
-
 id: restrict other property
 question: |
   Is there other property you want the court to protect?
@@ -2915,8 +2906,6 @@ fields:
       - Yes: Yes
       - No: No
       - Does not apply: dna
----
-
 ---
 id: request temporary support
 question: |
@@ -3113,7 +3102,6 @@ fields:
     show if:
       variable: firearms_reasons['vehicle']
       is: True
-
 ---
 reconsider: True
 code: |
@@ -3739,7 +3727,6 @@ buttons:
   - Exit: exit
   - Restart: restart
 ---
-
 template: al_user_bundle.send_email_template
 subject: |
   Your forms
@@ -3752,7 +3739,11 @@ content: |
 ---
 template: clerk_email
 subject: |
-  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")}
+  % if preferred_contact == "phone":
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ phone_number_formatted(safe_phone_number) }
+  % else:
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ safe_email }
+  % endif  
 content: |
   ${ users[0].name.full(middle="full") } is filing for a Petition for Order of Protection against ${other_parties[0].name.full(middle="full")}.
   
@@ -3808,11 +3799,101 @@ content: |
   % else:
   None
   % endif
-
 ---
 code: |
   recipient = get_config('cook after hours email')
   clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
+---
+id: preparer help info
+question: |
+  Did anyone help you complete these forms?
+subquestion: |
+  This information can help the court staff process your forms.
+  
+  **Note:** None of this will appear on your court forms.
+fields:
+  - label: |
+      No, I completed these forms myself.
+    field: self_preparation
+    datatype: yesnowide
+    required: False
+    disable others: True    
+  - I worked with an advocate or staff at an organization.: advocate
+    datatype: yesnowide
+    required: False
+  - Name of organization: advocate_org
+    required: False
+    show if:
+      variable: advocate
+      is: True
+  - Someone helped me translate.: interpreter
+    datatype: yesnowide
+    required: False
+  - Language: language_needed
+    input type: dropdown
+    choices:
+    - Spanish
+    - Albanian
+    - American Sign Language
+    - Amharic
+    - Arabic
+    - Armenian
+    - Assyrian
+    - Bosnian
+    - Bulgarian
+    - Burmese
+    - Chinese-Mandarin
+    - Chinese-Cantonese
+    - Czech
+    - Dinka
+    - Filipino
+    - French
+    - German
+    - Greek
+    - Gujarati
+    - Haitian Creole
+    - Hindi
+    - Hungarian
+    - Indonesian
+    - Italian
+    - Japanese
+    - Karen
+    - Kirundi
+    - Korean
+    - Kunama
+    - Laotian
+    - Lithuanian
+    - Macedonian
+    - Mongolian
+    - Nepali
+    - Persian
+    - Polish
+    - Portuguese
+    - Punjabi
+    - Romanian
+    - Russian
+    - Serbo-Croatian
+    - Somali
+    - Swahili
+    - Tagalog
+    - Telugu
+    - Thai
+    - Tigrinya
+    - Turkish
+    - Ukranian
+    - Urdu
+    - Vietnamese
+    - Yoruba
+    - Other
+    required: False
+    show if:
+      variable: interpreter
+      is: True
+  - Other language: other_language
+    required: False
+    js show if: 
+      val("interpreter") == true && val("language_needed") == "Other"
+
 ---
 id: get email to clerk details
 continue button field: clerk_email_prep
@@ -3836,18 +3917,18 @@ subquestion: |
   For information about your next court date after today's after-hours hearing, see the "Next Steps" document. This is with your downloadble forms.
   
 fields:
-  - Safe email address: safe_email    
-    datatype: email
-  - Preferred method of contact: preferred_contact
+  - How do you want to be contacted about the remote hearing?: preferred_contact
     input type: radio
     choices:
+      - Phone (preferred): phone
       - Email: email
-      - Phone: phone
   - Safe phone number: safe_phone_number
     datatype: al_international_phone
     show if:
       variable: preferred_contact
       is: "phone"
+  - Safe email address: safe_email    
+    datatype: email
   - Notes for the clerk (optional): notes_to_clerk
     input type: area
     rows: 3
