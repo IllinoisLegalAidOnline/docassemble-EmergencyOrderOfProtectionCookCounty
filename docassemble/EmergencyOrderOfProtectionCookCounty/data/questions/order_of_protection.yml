@@ -94,10 +94,6 @@ code: |
   sees_nav_bar
   snapshot_start
   lhi_transition # remove 30 days after public launch
-  # demo start
-  self_preparation # move to end of program and put answers into email to clerk
-  clerk_email_prep # remove from early step - just here for demo
-  # demo end
   instructions
   cook_after_hours
   accept_terms
@@ -353,6 +349,7 @@ code: |
   if confirm_email_send_now:
     self_preparation  
     clerk_email_prep
+    email_preview
     if clerk_email_sent_ok:
       snapshot_email
       email_sent
@@ -445,6 +442,101 @@ subquestion: |
   The earlier version of the program looked like this:
   
   [FILE hotdocs_eop.png, 100%, Previous Emergency Order of Protection program]
+---
+id: email preview
+continue button field: email_preview
+question: |
+  Email contents
+subquestion: |
+  email subject:
+  % if preferred_contact == "phone":
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ phone_number_formatted(safe_phone_number) }
+  % else:
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ safe_email }
+  % endif  
+  
+  [NEWLINE]
+  Mail body: 
+  ${ users[0].name.full(middle="full") } is filing for a Petition for Order of Protection against ${other_parties[0].name.full(middle="full")}.
+  
+  Petitioner safe email address: ${ safe_email }
+  
+  % if preferred_contact == "phone":
+  Petitioner safe phone number: ${ phone_number_formatted(safe_phone_number) }
+  
+  Petitioner prefers to be contacted by **phone**.
+  % else:
+  Petitioner safe phone number: none listed
+  
+  Petitioner prefers to be contacted by **email**.
+  % endif
+  
+  % if showifdef('self_preparation'):
+  Prepared by: Petitioner
+  % endif
+  % if showifdef('advocate'):
+  Prepared by: advocate or organization
+  % if showifdef('advocate_org') != "":
+  ${ advocate_org }
+  % else:
+  (none specified)
+  % endif
+  % endif
+  % if showifdef('self_preparation') == False and showifdef('advocate') == False:
+  Prepared by: (not answered)
+  % endif
+  
+  % if showifdef('interpreter'):
+  % if showifdef('language_needed') == "Other":
+  Language: ${ other_language }
+  % else:
+  Language: ${ language_needed }
+  % endif 
+  % else:
+  Language: (none selected)
+  % endif
+  
+  Notes from Petitioner to the clerk:  
+  ${ notes_to_clerk if notes_to_clerk != "" else "none" }
+  
+  Earlier Cook County case between the parties:  
+  % if previous_cook_case_type == "divorce" or previous_cook_case_type == "parentage":
+  % if previous_cook_case_type == "divorce":
+  Divorce 
+  else:
+  Parentage
+  % endif
+  Case number ${ previous_cook_case_number} filed on ${ format_date(previous_cook_case_date, format='MMM d, yyyy')} with Judge ${ previous_cook_case_judge }
+  % else:
+  None
+  % endif
+  
+  Other Orders of Protection in Illinois:
+  % if has_other_ops == "Yes":
+  % for op in other_ops:
+  % if op.state == "IL":
+  People: ${ op.name.text }  
+  Location: ${ op.county + " County, "+ op.state }  
+  Year: ${ op.year }  
+  % endif
+  % endfor
+  % else:
+  None
+  % endif
+  
+  Other cases in Illinois:
+  % if has_other_cases == "Yes":
+  % for case in other_cases:
+  % if case.state == "IL":
+  Type: ${ case.name.text }  
+  Location: ${ case.county + " County, " + case.state }  
+  Year: ${ case.year }  
+  % endif
+  % endfor
+  % else:
+  None
+  % endif
+
 
 ---
 id: instructions
@@ -1195,7 +1287,7 @@ subquestion: |
   
   Include any threats or use of a weapon.
   
-  For repeated abuse, you can say things like "weekly" for the date or "anytime I work late" for the time. 
+  For repeated abuse, include the date and time of the most recent incident. You can add things like "weekly" or "anytime I work late" if it applies. 
 
 fields:
   - Date (month and year): incidents[i].date
@@ -1228,7 +1320,7 @@ subquestion: |
   
   Include any threats or use of a weapon.
   
-  For repeated abuse, you can say things like "weekly" for the date or "anytime I work late" for the time. 
+  For repeated abuse, include the date and time of the most recent incident. You can add things like "weekly" or "anytime I work late" if it applies.
 
 fields:
   - Date (month and year): incidents[0].date
@@ -3758,7 +3850,32 @@ content: |
   
   Petitioner prefers to be contacted by **email**.
   % endif
+
+  % if showifdef('self_preparation'):
+  Prepared by: Petitioner
+  % endif
+  % if showifdef('advocate'):
+  Prepared by: advocate or organization
+  % if showifdef('advocate_org') != "":
+  ${ advocate_org }
+  % else:
+  (none specified)
+  % endif
+  % endif
+  % if showifdef('self_preparation') == False and showifdef('advocate') == False:
+  Prepared by: (not answered)
+  % endif
   
+  % if showifdef('interpreter'):
+  % if showifdef('language_needed') == "Other":
+  Language: ${ other_language }
+  % else:
+  Language: ${ language_needed }
+  % endif 
+  % else:
+  Language: (none selected)
+  % endif
+
   Notes from Petitioner to the clerk:  
   ${ notes_to_clerk if notes_to_clerk != "" else "none" }
   
