@@ -3280,7 +3280,7 @@ id: notice by email
 question: |
   Do you have a safe email address?
 subquestion: |
-  If you have a safe email address, you must list it so the court and other parties can contact you about this case.
+  If you have a safe email address, you must list it on the forms so the court and other parties can contact you about this case.
 fields:
   - Have a safe email?: users[0].email_notice
     datatype: yesnoradio
