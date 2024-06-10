@@ -93,6 +93,7 @@ code: |
   nav.set_section('section_intro')
   sees_nav_bar
   snapshot_start
+  lhi_transition # remove 30 days after public launch
   instructions
   cook_after_hours
   accept_terms
@@ -346,6 +347,7 @@ code: |
   snapshot_forms
   get_docs_screen
   if confirm_email_send_now:
+    self_preparation  
     clerk_email_prep
     if clerk_email_sent_ok:
       snapshot_email
@@ -426,6 +428,115 @@ subquestion: |
   * If you need to exit this program, click the red **Escape** button at the top of the screen.
   * Learn about [**safety while using the Internet**](https://www.thehotline.org/help/tech-social-media-safety/).
 field: sees_nav_bar
+---
+id: lhi hotdocs transition info
+continue button field: lhi_transition
+question: |
+  Note about this new program
+subquestion: |
+  We've updated this program so that it is easier-to-use and mobile-friendly.
+
+  **Note:** The old program will be retired July 9, 2024. If you have saved answers on that version of the program, you can get to them by visiting [**LawHelp Interactive**](https://lawhelpinteractive.org/Interview/InterviewHome?templateId=8207). 
+
+  The earlier version of the program looked like this:
+  
+  [FILE hotdocs_eop.png, 100%, Previous Emergency Order of Protection program]
+---
+id: email preview
+continue button field: email_preview
+question: |
+  Email contents
+subquestion: |
+  email subject:
+  % if preferred_contact == "phone":
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ phone_number_formatted(safe_phone_number) }
+  % else:
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ safe_email }
+  % endif  
+  
+  [NEWLINE]
+  Mail body: 
+  ${ users[0].name.full(middle="full") } is filing for a Petition for Order of Protection against ${other_parties[0].name.full(middle="full")}.
+  
+  Petitioner safe email address: ${ safe_email }
+  
+  % if preferred_contact == "phone":
+  Petitioner safe phone number: ${ phone_number_formatted(safe_phone_number) }
+  
+  Petitioner prefers to be contacted by **phone**.
+  % else:
+  Petitioner safe phone number: none listed
+  
+  Petitioner prefers to be contacted by **email**.
+  % endif
+  
+  % if showifdef('self_preparation'):
+  Prepared by: Petitioner
+  % endif
+  % if showifdef('advocate'):
+  Prepared by: advocate or organization
+  % if showifdef('advocate_org') != "":
+  - ${ advocate_org }
+  % else:
+  (none specified)
+  % endif
+  % endif
+  % if showifdef('self_preparation') == False and showifdef('advocate') == False:
+  Prepared by: (not answered)
+  % endif
+  
+  % if showifdef('interpreter'):
+  % if showifdef('language_needed') == "Other":
+  Language: ${ other_language }
+  % else:
+  Language: ${ language_needed }
+  % endif 
+  % else:
+  Language: (none selected)
+  % endif
+  
+  Notes from Petitioner to the clerk:  
+  ${ notes_to_clerk if notes_to_clerk != "" else "none" }
+  
+  Earlier Cook County case between the parties:  
+  % if previous_cook_case_type == "divorce" or previous_cook_case_type == "parentage":
+  % if previous_cook_case_type == "divorce":
+  Divorce 
+  else:
+  Parentage
+  % endif
+  Case number ${ previous_cook_case_number} filed on ${ format_date(previous_cook_case_date, format='MMM d, yyyy')} with Judge ${ previous_cook_case_judge }
+  % else:
+  None
+  % endif
+  
+  Other Orders of Protection in Illinois:
+  % if has_other_ops == "Yes":
+  % for op in other_ops:
+  % if op.state == "IL":
+  People: ${ op.name.text }  
+  Location: ${ op.county + " County, "+ op.state }  
+  Year: ${ op.year }  
+  % endif
+  % endfor
+  % else:
+  None
+  % endif
+  
+  Other cases in Illinois:
+  % if has_other_cases == "Yes":
+  % for case in other_cases:
+  % if case.state == "IL":
+  Type: ${ case.name.text }  
+  Location: ${ case.county + " County, " + case.state }  
+  Year: ${ case.year }  
+  % endif
+  % endfor
+  % else:
+  None
+  % endif
+
+
 ---
 id: instructions
 continue button field: instructions
@@ -549,31 +660,6 @@ subquestion: |
 buttons:
   - Exit: exit
   - Restart: restart
----
-#id: county
-#continue button field: case_county
-#question: |
-#  In which county will you file your ${ form_name }?
-#subquestion: |
-#  You can file your case in the county:
-#  
-#  * Where you live,
-#  * Where the person who caused the abuse lives,
-#  * Where the abuse occurred, or
-#  * Where you are staying to avoid abuse.
-#fields:
-#  - no label: trial_court_index
-#    datatype: integer
-#    code: |
-#      court_county_lookup()
-#  - note: |
-#      ${ collapse_template(county_lookup_help) }  
-#---
-#template: county_lookup_help
-#subject: |
-#  **What if I need help finding the county?**
-#content: |  
-#    You can use this [**City-to-County Finder**](https://www.statsamerica.org/CityCountyFinder/) to find the county.
 ---
 depends on:
   - trial_court_index
@@ -1200,10 +1286,10 @@ subquestion: |
   
   Include any threats or use of a weapon.
   
-  For repeated abuse, you can say things like "weekly" for the date or "anytime I work late" for the time. 
+  For repeated abuse, include the date and time of the most recent incident. You can add things like "weekly" or "anytime I work late" if it applies. 
 
 fields:
-  - Date: incidents[i].date
+  - Date (month and year): incidents[i].date
     maxlength: 20
     help: |
       If you don't remember the exact date, enter the month and year. Use abbreviations if needed.
@@ -1233,10 +1319,10 @@ subquestion: |
   
   Include any threats or use of a weapon.
   
-  For repeated abuse, you can say things like "weekly" for the date or "anytime I work late" for the time. 
+  For repeated abuse, include the date and time of the most recent incident. You can add things like "weekly" or "anytime I work late" if it applies.
 
 fields:
-  - Date: incidents[0].date
+  - Date (month and year): incidents[0].date
     maxlength: 20
     help: |
       If you don't remember the exact date, enter the month and year. Use abbreviations if needed.
@@ -1800,7 +1886,6 @@ subquestion: |
 fields:
   - School name: same_school_name
     maxlength: 50
-
 ---
 id: minor respondent parents help
 question: |
@@ -1814,7 +1899,6 @@ fields:
       - Yes: Yes
       - No: No
       - Does not apply: dna
-
 ---
 id: minor respondent parent info
 question: |
@@ -2530,7 +2614,6 @@ fields:
   - "Any other items?": petitioner_personal_property.there_is_another
     datatype: yesnoradio
 ---
-
 depends on: 
   - petitioner_personal_property[i].respo_has
 code: |
@@ -2861,7 +2944,6 @@ code: |
   if cell_numbers.number_gathered() >= 4:
     cell_numbers.there_is_another = False
 ---
-
 id: restrict other property
 question: |
   Is there other property you want the court to protect?
@@ -2915,8 +2997,6 @@ fields:
       - Yes: Yes
       - No: No
       - Does not apply: dna
----
-
 ---
 id: request temporary support
 question: |
@@ -3113,7 +3193,6 @@ fields:
     show if:
       variable: firearms_reasons['vehicle']
       is: True
-
 ---
 reconsider: True
 code: |
@@ -3201,7 +3280,7 @@ id: notice by email
 question: |
   Do you have a safe email address?
 subquestion: |
-  If you have a safe email address, you must list it so the court and other parties can contact you about this case.
+  If you have a safe email address, you must list it on the forms so the court and other parties can contact you about this case.
 fields:
   - Have a safe email?: users[0].email_notice
     datatype: yesnoradio
@@ -3739,7 +3818,6 @@ buttons:
   - Exit: exit
   - Restart: restart
 ---
-
 template: al_user_bundle.send_email_template
 subject: |
   Your forms
@@ -3752,7 +3830,11 @@ content: |
 ---
 template: clerk_email
 subject: |
-  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")}
+  % if preferred_contact == "phone":
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ phone_number_formatted(safe_phone_number) }
+  % else:
+  Emergency Order of Protection Petition - ILAO Easy Form - ${ users[0].name.full(middle="full") } v. ${other_parties[0].name.full(middle="full")} - contact: ${ safe_email }
+  % endif  
 content: |
   ${ users[0].name.full(middle="full") } is filing for a Petition for Order of Protection against ${other_parties[0].name.full(middle="full")}.
   
@@ -3767,7 +3849,32 @@ content: |
   
   Petitioner prefers to be contacted by **email**.
   % endif
+
+  % if showifdef('self_preparation'):
+  Prepared by: Petitioner
+  % endif
+  % if showifdef('advocate'):
+  Prepared by: advocate or organization
+  % if showifdef('advocate_org') != "":
+  - ${ advocate_org }
+  % else:
+  (none specified)
+  % endif
+  % endif
+  % if showifdef('self_preparation') == False and showifdef('advocate') == False:
+  Prepared by: (not answered)
+  % endif
   
+  % if showifdef('interpreter'):
+  % if showifdef('language_needed') == "Other":
+  Language: ${ other_language }
+  % else:
+  Language: ${ language_needed }
+  % endif 
+  % else:
+  Language: (none selected)
+  % endif
+
   Notes from Petitioner to the clerk:  
   ${ notes_to_clerk if notes_to_clerk != "" else "none" }
   
@@ -3808,11 +3915,104 @@ content: |
   % else:
   None
   % endif
-
 ---
 code: |
   recipient = get_config('cook after hours email')
   clerk_email_sent_ok = al_court_bundle.send_email(to=recipient, template=clerk_email) 
+---
+id: preparer help info
+question: |
+  Did anyone help you complete these forms?
+subquestion: |
+  This information can help the court staff process your forms.
+  
+  **Note:** None of this will appear on your court forms.
+fields:
+  - label: |
+      No, I completed these forms myself.
+    field: self_preparation
+    datatype: yesnowide
+    required: False
+  - Yes, I worked with an advocate or staff at an organization.: advocate
+    datatype: yesnowide
+    required: False
+  - Name of organization: advocate_org
+    required: False
+    show if:
+      variable: advocate
+      is: True
+  - note: |
+      ---      
+  - Someone helped me translate.: interpreter
+    datatype: yesnowide
+    required: False
+  - Language: language_needed
+    input type: dropdown
+    choices:
+    - Spanish
+    - Albanian
+    - American Sign Language
+    - Amharic
+    - Arabic
+    - Armenian
+    - Assyrian
+    - Bosnian
+    - Bulgarian
+    - Burmese
+    - Chinese-Mandarin
+    - Chinese-Cantonese
+    - Czech
+    - Dinka
+    - Filipino
+    - French
+    - German
+    - Greek
+    - Gujarati
+    - Haitian Creole
+    - Hindi
+    - Hungarian
+    - Indonesian
+    - Italian
+    - Japanese
+    - Karen
+    - Kirundi
+    - Korean
+    - Kunama
+    - Laotian
+    - Lithuanian
+    - Macedonian
+    - Mongolian
+    - Nepali
+    - Persian
+    - Polish
+    - Portuguese
+    - Punjabi
+    - Romanian
+    - Russian
+    - Serbo-Croatian
+    - Somali
+    - Swahili
+    - Tagalog
+    - Telugu
+    - Thai
+    - Tigrinya
+    - Turkish
+    - Ukranian
+    - Urdu
+    - Vietnamese
+    - Yoruba
+    - Other
+    required: False
+    show if:
+      variable: interpreter
+      is: True
+  - Other language: other_language
+    required: False
+    js show if: 
+      val("interpreter") == true && val("language_needed") == "Other"
+validation code: |
+  if showifdef('self_preparation') == True and showifdef('advocate') == True:
+    validation_error("You said that you completed these forms yourself and that you filled them out with help. Please choose one or the other.", field='advocate')
 ---
 id: get email to clerk details
 continue button field: clerk_email_prep
@@ -3836,18 +4036,18 @@ subquestion: |
   For information about your next court date after today's after-hours hearing, see the "Next Steps" document. This is with your downloadble forms.
   
 fields:
-  - Safe email address: safe_email    
-    datatype: email
-  - Preferred method of contact: preferred_contact
+  - How do you want to be contacted about the remote hearing?: preferred_contact
     input type: radio
     choices:
+      - Phone (preferred): phone
       - Email: email
-      - Phone: phone
   - Safe phone number: safe_phone_number
     datatype: al_international_phone
     show if:
       variable: preferred_contact
       is: "phone"
+  - Safe email address (required for after-hours hearing): safe_email    
+    datatype: email
   - Notes for the clerk (optional): notes_to_clerk
     input type: area
     rows: 3
