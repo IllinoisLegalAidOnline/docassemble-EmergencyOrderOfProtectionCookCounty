@@ -349,7 +349,6 @@ code: |
   if confirm_email_send_now:
     self_preparation  
     clerk_email_prep
-    email_preview
     if clerk_email_sent_ok:
       snapshot_email
       email_sent
@@ -477,7 +476,7 @@ subquestion: |
   % if showifdef('advocate'):
   Prepared by: advocate or organization
   % if showifdef('advocate_org') != "":
-  ${ advocate_org }
+  - ${ advocate_org }
   % else:
   (none specified)
   % endif
@@ -3857,7 +3856,7 @@ content: |
   % if showifdef('advocate'):
   Prepared by: advocate or organization
   % if showifdef('advocate_org') != "":
-  ${ advocate_org }
+  - ${ advocate_org }
   % else:
   (none specified)
   % endif
@@ -3934,8 +3933,7 @@ fields:
     field: self_preparation
     datatype: yesnowide
     required: False
-    disable others: True    
-  - I worked with an advocate or staff at an organization.: advocate
+  - Yes, I worked with an advocate or staff at an organization.: advocate
     datatype: yesnowide
     required: False
   - Name of organization: advocate_org
@@ -3943,6 +3941,8 @@ fields:
     show if:
       variable: advocate
       is: True
+  - note: |
+      ---      
   - Someone helped me translate.: interpreter
     datatype: yesnowide
     required: False
@@ -4010,7 +4010,9 @@ fields:
     required: False
     js show if: 
       val("interpreter") == true && val("language_needed") == "Other"
-
+validation code: |
+  if showifdef('self_preparation') == True and showifdef('advocate') == True:
+    validation_error("You said that you completed these forms yourself and that you filled them out with help. Please choose one or the other.", field='advocate')
 ---
 id: get email to clerk details
 continue button field: clerk_email_prep
@@ -4044,7 +4046,7 @@ fields:
     show if:
       variable: preferred_contact
       is: "phone"
-  - Safe email address: safe_email    
+  - Safe email address (required for after-hours hearing): safe_email    
     datatype: email
   - Notes for the clerk (optional): notes_to_clerk
     input type: area
