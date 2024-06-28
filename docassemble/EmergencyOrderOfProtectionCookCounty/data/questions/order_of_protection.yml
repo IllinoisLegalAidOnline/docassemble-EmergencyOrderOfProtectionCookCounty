@@ -302,6 +302,7 @@ code: |
     if knows_respondent_home_last:
       other_parties[0].address.address
   other_parties[0].phone_number
+  respondent_on_social_media
   if knows_respondent_work:
     other_parties[0].work_address.address
     
@@ -361,7 +362,12 @@ code: |
   	'start_time': str(current_datetime().format_datetime()),
   	'started_interview': True, 
   	}
-    
+
+  try:
+    stuff_to_snapshot['ip_address'] = device(ip=True)
+  except:
+    pass
+
   stuff_to_snapshot['zip'] = showifdef('users[0].address.zip')
 
   stuff_to_snapshot['downloaded_forms'] = showifdef('forms_assembling')
@@ -1555,12 +1561,32 @@ question: |
 subquestion: |
   If you do not know, leave these blank.
 fields:
-  - Phone: other_parties[0].phone_number
+  - Home phone: other_parties[0].phone_number
+    datatype: al_international_phone
+    required: False
+  - cell phone: other_parties[0].mobile_number
     datatype: al_international_phone
     required: False
   - Email address: other_parties[0].email    
     datatype: email
     required: False
+---
+id: respondent social media
+question: |
+  Is ${other_parties[0].name.full(middle="full")} active on social media?
+subquestion: |
+  If you know about ${other_parties[0].name.full(middle="full")}'s accounts, this could help the sheriff find them.
+fields:
+  - Active on social media?: respondent_on_social_media
+    datatype: radio
+    choices:
+      - Yes: Yes
+      - No: No
+      - I don't know.: I don't know.
+  - List accounts: respondent_social_media_accounts
+    show if:
+      variable: respondent_on_social_media
+      is: 'Yes'
 ---
 id: respondent home address question
 question: |
@@ -3484,24 +3510,56 @@ fields:
     required: False
     help: |
       Include as much information as possible, such as best hours to serve, type of building, etc.
+#---
+#id: respondent gender
+#question: |
+#  What is ${other_parties[0].name.full(middle="full")}'s gender?
+#subquestion: |
+#  This information is used to help enforce the Order of Protection.
+#fields:
+#  - Gender: other_parties[0].gender
+#    datatype: radio
+#    choices:
+#      - Male: male
+#      - Female: female
+#      - Other: other
+#  - ${other_parties[0].name.full(middle="full")}'s gender: respondent_gender_other
+#    maxlength: 20
+#    show if:
+#      variable: other_parties[0].gender
+#      is: 'other'
 ---
-id: respondent gender
+id: respondent gender cook only
 question: |
   What is ${other_parties[0].name.full(middle="full")}'s gender?
 subquestion: |
-  This information is used to help enforce the Order of Protection.
+  This information is used to help the sheriff identify ${other_parties[0].name.full(middle="full")} and enforce the Order of Protection. If you do not know this information, you can leave it blank.
 fields:
   - Gender: other_parties[0].gender
-    datatype: radio
+    datatype: checkboxes
+    none of the above: False
+    required: False
     choices:
       - Male: male
       - Female: female
+      - Transgender woman / Transfeminine: transfem
+      - Transgender man / Transmasculine: transmasc
+      - Nonbinary / Gender non-conforming: nonbinary
       - Other: other
   - ${other_parties[0].name.full(middle="full")}'s gender: respondent_gender_other
     maxlength: 20
     show if:
-      variable: other_parties[0].gender
-      is: 'other'
+      variable: other_parties[0].gender['other']
+      is: True
+  - Sex assigned at birth: respondent_sex_at_birth
+    datatype: radio
+    required: False
+    choices:
+      - Male: male
+      - Female: female
+    help: |
+      Sex assigned at birth refers to the sex or gender marker on ${other_parties[0].name.full(middle="full")}'s original birth certificate. If they were born intersex, you may want to add it to mention that in gender/other.
+
 ---
 id: respondent race
 question: |

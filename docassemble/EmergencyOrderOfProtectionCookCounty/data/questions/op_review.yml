@@ -1535,7 +1535,7 @@ review:
 
 
 ---
-id: shared kids revisit
+id: shared kids revisit review screen
 continue button field: shared_kids.revisit
 question: |
   Edit the minor children you have with ${other_parties[0].name.full(middle="full")}
@@ -1555,7 +1555,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: shared kids details
+id: shared kids details review screen
 continue button field: x.review_shared_child_details
 generic object: ALIndividual
 question: |
@@ -1579,7 +1579,7 @@ review:
       ${ word(yesno(x.protect)) }
 continue button label: Next
 ---
-id: petitioner kids revisit
+id: petitioner kids revisit review screen
 continue button field: petitioner_kids.revisit
 question: |
   Edit your minor children you **do not** have with ${other_parties[0].name.full(middle="full")} you want protected by this order
@@ -1599,7 +1599,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: other hh members revisit
+id: other hh members revisit review screen
 continue button field: other_hh_members.revisit
 question: |
   Edit the household members you want protected by this order
@@ -1619,7 +1619,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: incidents revisit
+id: incidents revisit review screen
 continue button field: incidents.revisit
 question: |
   Edit what happened
@@ -1644,7 +1644,7 @@ edit:
 delete buttons: True
 confirm: True
 ---
-id: incident details
+id: incident details review screen
 continue button field: x.review_incidents_details
 generic object: DAObject
 question: |
@@ -1664,7 +1664,7 @@ review:
       ${ x.name.text }
 continue button label: Next
 ---
-id: other ops revisit
+id: other ops revisit review screen
 continue button field: other_ops.revisit
 question: |
   Edit the other Orders of Protection against ${other_parties[0].name.full(middle="full")}
@@ -1685,7 +1685,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: edit other ops
+id: edit other ops review screen
 continue button field: x.review_other_op_details
 generic object: DAObject
 question: |
@@ -1710,7 +1710,7 @@ review:
 continue button label: Next
 
 ---
-id: other cases revisit
+id: other cases revisit review screen
 continue button field: other_cases.revisit
 question: |
   Edit the other court cases with ${other_parties[0].name.full(middle="full")}
@@ -1732,7 +1732,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: other cases edit
+id: other cases edit review screen
 continue button field: x.review_other_cases_details
 generic object: DAObject
 question: |
@@ -1758,7 +1758,7 @@ continue button label: Next
 
 
 ---
-id: personal property revisit
+id: personal property revisit review screen
 continue button field: petitioner_personal_property.revisit
 question: |
   Edit the personal property you want to protect
@@ -1779,7 +1779,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: personal property edit
+id: personal property edit review screen
 continue button field: x.review_personal_property_details
 generic object: DAObject
 question: |
@@ -1795,14 +1795,7 @@ review:
       ${ word(yesno(x.respo_has)) } 
 continue button label: Next
 ---
-
-
-
-
-
-
----
-id: pets revisit
+id: pets revisit review screen
 continue button field: pets.revisit
 question: |
   Edit the pet you want to protect
@@ -1823,7 +1816,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: pet edit
+id: pet edit review screen
 continue button field: x.review_pet_details
 generic object: DAObject
 question: |
@@ -1838,12 +1831,8 @@ review:
       **Description:**
       ${ x.description } 
 continue button label: Next
-
-
-
-
 ---
-id: cell phone numbers revisit
+id: cell phone numbers revisit review screen
 continue button field: cell_numbers.revisit
 question: |
   Edit the phone numbers you want to separate
@@ -1864,7 +1853,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: cell number edit
+id: cell number edit review screen
 continue button field: x.review_cell_number_details
 generic object: DAObject
 question: |
@@ -1875,7 +1864,6 @@ review:
       **Cell phone number:**
       ${ phone_number_formatted(x.name.text)  }
 continue button label: Next
-
 
 ---
 id: basic info review screen
