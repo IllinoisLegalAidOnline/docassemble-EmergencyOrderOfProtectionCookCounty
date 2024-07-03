@@ -1145,9 +1145,26 @@ review:
       **What should ${other_parties[0].name.full(middle="full")}'s parent or guardian be ordered to do?**
       ${ respondent_parent_order }
     show if: respondent_parent_help == "Yes"
+  - Edit: other_parties[0].sex
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex:**
+      ${ other_parties[0].sex }
+  - Edit: other_parties[0].sex_other
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s other sex:**
+      ${ other_parties[0].sex_other }
+    show if: other_parties[0].sex == 'other'
+  - Edit: respondent_sex_at_birth
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
+      % if respondent_sex_at_birth == 'male':
+      Male
+      % else:
+      Female
+      % endif
   - Edit: other_parties[0].gender
     button: |
-      **What is ${other_parties[0].name.full(middle="full")}'s gender?**
+      **What is ${other_parties[0].name.full(middle="full")}'s gender identity?**
       
       % if other_parties[0].gender['male'] == True:
       * Male
@@ -1169,7 +1186,7 @@ review:
       % endif
   - Edit: other_parties[0].gender
     button: |
-      **${other_parties[0].name.full(middle="full")}'s other gender:**
+      **${other_parties[0].name.full(middle="full")}'s other gender identity:**
       ${ respondent_gender_other }
     show if: other_parties[0].gender['other'] == True
   - Edit: respondent_sex_at_birth
@@ -3069,10 +3086,26 @@ review:
       **What should ${other_parties[0].name.full(middle="full")}'s parent or guardian be ordered to do?**
       ${ respondent_parent_order }
     show if: respondent_parent_help == "Yes"
-      
+  - Edit: other_parties[0].sex
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex:**
+      ${ other_parties[0].sex }
+  - Edit: other_parties[0].sex_other
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s other sex:**
+      ${ other_parties[0].sex_other }
+    show if: other_parties[0].sex == 'other'
+  - Edit: respondent_sex_at_birth
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
+      % if respondent_sex_at_birth == 'male':
+      Male
+      % else:
+      Female
+      % endif
   - Edit: other_parties[0].gender
     button: |
-      **What is ${other_parties[0].name.full(middle="full")}'s gender?**
+      **What is ${other_parties[0].name.full(middle="full")}'s gender identity?**
       
       % if other_parties[0].gender['male'] == True:
       * Male
@@ -3094,17 +3127,9 @@ review:
       % endif
   - Edit: other_parties[0].gender
     button: |
-      **${other_parties[0].name.full(middle="full")}'s other gender:**
+      **${other_parties[0].name.full(middle="full")}'s other gender identity:**
       ${ respondent_gender_other }
     show if: other_parties[0].gender['other'] == True
-  - Edit: respondent_sex_at_birth
-    button: |
-      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
-      % if respondent_sex_at_birth == 'male':
-      Male
-      % else:
-      Female
-      % endif
   - Edit: other_parties[0].race
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s race?**

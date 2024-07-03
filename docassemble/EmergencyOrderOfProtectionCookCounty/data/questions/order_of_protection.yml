@@ -417,10 +417,10 @@ id: welcome
 question: |
   Emergency Order of Protection - Cook County
 subquestion: |
-  Welcome to Illinois Legal Aid Online's **Emergency Order of Protection - Cook County** Easy Form.
+  Welcome to Illinois Legal Aid Online's **Emergency Order of Protection - Cook County** Easy Form. The forms made by this program are only for use in Cook County, Illinois.
 
-  This program makes forms that help you ask the court to order someone to stop harming or threatening you, your children, or other household members. The Order of Protection can also require the abuser to stay away from other protected people and locations. The forms made by this program are only for use in Cook County, Illinois.
-
+  This program makes forms that help you ask the court to order someone to stop harming or threatening you, your children, or other household members. The Order of Protection can also require the abuser to stay away from other protected people and locations.
+  
   To learn more, read ILAO's article about [**Orders of Protection**](https://www.illinoislegalaid.org/node/29806).
   
   <div class="alert alert-info ilao-info" role="alert">
@@ -3536,11 +3536,32 @@ fields:
 ---
 id: respondent gender cook only
 question: |
-  What is ${other_parties[0].name.full(middle="full")}'s gender?
+  What is ${other_parties[0].name.full(middle="full")}'s sex and gender identity?
 subquestion: |
-  This information is used to help the sheriff identify ${other_parties[0].name.full(middle="full")} and enforce the Order of Protection. If you do not know this information, you can leave it blank.
+  This information is used to help law enforcement identify ${other_parties[0].name.full(middle="full")} and enforce the Order of Protection. If you do not know this information, you can leave it blank.
 fields:
-  - Gender: other_parties[0].gender
+  - Sex (will be public, used by any law enforement): other_parties[0].sex
+    datatype: radio
+    required: False
+    choices:
+      - Male: Male
+      - Female: Female
+      - Other: other
+  - ${other_parties[0].name.full(middle="full")}'s sex (will be public, used by any law enforement): other_parties[0].sex_other
+    maxlength: 20
+    required: False
+    show if:
+      variable: other_parties[0].sex
+      is: "other"
+  - Sex assigned at birth (confidential, used by sheriff only): respondent_sex_at_birth
+    datatype: radio
+    required: False
+    choices:
+      - Male: male
+      - Female: female
+    help: |
+      Sex assigned at birth refers to the sex or gender marker on ${other_parties[0].name.full(middle="full")}'s original birth certificate. If they were born intersex, you may want to mention that in gender/other.
+  - Gender identity (confidential, used by sheriff only): other_parties[0].gender
     datatype: checkboxes
     none of the above: False
     required: False
@@ -3551,20 +3572,12 @@ fields:
       - Transgender man / Transmasculine: transmasc
       - Nonbinary / Gender non-conforming: nonbinary
       - Other: other
-  - ${other_parties[0].name.full(middle="full")}'s gender: respondent_gender_other
+  - ${other_parties[0].name.full(middle="full")}'s gender identity (confidential, used by sheriff only): respondent_gender_other
     maxlength: 20
     required: False
     show if:
       variable: other_parties[0].gender['other']
       is: True
-  - Sex assigned at birth: respondent_sex_at_birth
-    datatype: radio
-    required: False
-    choices:
-      - Male: male
-      - Female: female
-    help: |
-      Sex assigned at birth refers to the sex or gender marker on ${other_parties[0].name.full(middle="full")}'s original birth certificate. If they were born intersex, you may want to add it to mention that in gender/other.
 
 ---
 id: respondent race
@@ -5127,6 +5140,7 @@ attachment:
     - "respondent": ${other_parties[0].name.full(middle="full")}
     #- "case_number__1": ${ "" }
     - "reason_dv": ${ True }
+    - "e_signature": ${ "/s/ " + users[0].name.full(middle="full") }
     - "petitioner__2": ${ users[0].name.full(middle="full") }
     - "user_mail_address_line_one": ${ users[0].address.line_one(bare=True) }
     - "user_mail_address_city_state_zip": ${ users[0].address.line_two() }
@@ -5264,7 +5278,7 @@ attachment:
     - "hide_address": ${ hide_address }
     - "notice_address_one_line": ${ users[0].address.on_one_line(bare=True) }
     - "petitioner_notice_email": ${ users[0].email if users[0].email_notice else ""}
-    - "respondent_gender": ${ respondent_gender_other if other_parties[0].gender['other'] == True else other_parties[0].gender }
+    - "respondent_gender": ${ other_parties[0].sex_other if other_parties[0].sex == 'other' else other_parties[0].gender }
     - "respondent_race": ${ respondent_race_other if other_parties[0].race == 'other' else other_parties[0].race }
     - "respondent_dob": |
         % if knows_respondent_dob == 'exact' and other_parties[0].birthdate != "":
@@ -5778,7 +5792,7 @@ attachment:
     - "hide_address": ${ hide_address }
     - "notice_address_one_line": ${ users[0].address.on_one_line(bare=True) }
     - "petitioner_notice_email": ${ users[0].email if users[0].email_notice else ""}
-    - "respondent_gender": ${ respondent_gender_other if other_parties[0].gender['other'] == True else other_parties[0].gender }
+    - "respondent_gender": ${ other_parties[0].sex_other if other_parties[0].sex == 'other' else other_parties[0].gender }
     - "respondent_race": ${ respondent_race_other if other_parties[0].race == 'other' else other_parties[0].race }
     - "respondent_dob": |
         % if knows_respondent_dob == 'exact' and other_parties[0].birthdate != "":
