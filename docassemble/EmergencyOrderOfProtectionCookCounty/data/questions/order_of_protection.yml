@@ -93,7 +93,6 @@ code: |
   nav.set_section('section_intro')
   sees_nav_bar
   snapshot_start
-  lhi_transition # remove 30 days after public launch
   instructions
   cook_after_hours
   accept_terms
@@ -435,18 +434,18 @@ subquestion: |
   * Learn about [**safety while using the Internet**](https://www.thehotline.org/help/tech-social-media-safety/).
 field: sees_nav_bar
 ---
-id: lhi hotdocs transition info
-continue button field: lhi_transition
-question: |
-  Note about this new program
-subquestion: |
-  We've updated this program so that it is easier-to-use and mobile-friendly.
-
-  **Note:** The old program will be retired July 9, 2024. If you have saved answers on that version of the program, you can get to them by visiting [**LawHelp Interactive**](https://lawhelpinteractive.org/Interview/InterviewHome?templateId=8207). 
-
-  The earlier version of the program looked like this:
-  
-  [FILE hotdocs_eop.png, 100%, Previous Emergency Order of Protection program]
+#id: lhi hotdocs transition info
+#continue button field: lhi_transition
+#question: |
+#  Note about this new program
+#subquestion: |
+#  We've updated this program so that it is easier-to-use and mobile-friendly.
+#
+#  **Note:** The old program will be retired July 9, 2024. If you have saved answers on that version of the program, you can get to them by visiting [**LawHelp Interactive**](https://lawhelpinteractive.org/Interview/InterviewHome?templateId=8207). 
+#
+#  The earlier version of the program looked like this:
+#  
+#  [FILE hotdocs_eop.png, 100%, Previous Emergency Order of Protection program]
 ---
 id: email preview
 continue button field: email_preview
@@ -4270,7 +4269,6 @@ objects:
   - cook_dv_cover_sheet: ALDocument.using(title="Domestic Violence Cover Sheet", filename="cook_dv_cover_sheet.pdf", has_addendum=False)
   - cook_sheriff_info_sheet: ALDocument.using(title="Confidential Sheriff Information Sheet", filename="cook_sheriff_info_sheet.pdf", has_addendum=False)
   - sheriff_cover_sheet: ALDocument.using(title="Sheriff Information Cover Sheet", filename="sheriff_info_cover_sheet.pdf", has_addendum=False)
-
 ---
 code: |
   op_next_steps.enabled = True
@@ -4288,6 +4286,7 @@ code: |
   cook_dv_cover_sheet.enabled = False
   cook_sheriff_info_sheet.enabled = False
   sheriff_cover_sheet.enabled = False
+  sheriff_info_bundle.enabled = False
   
   if incidents.number() > 4:
     additional_incidents.enabled = True
@@ -4323,12 +4322,13 @@ code: |
     cook_dv_cover_sheet.enabled = True
     cook_sheriff_info_sheet.enabled = True
     sheriff_cover_sheet.enabled = True
-
+    sheriff_info_bundle.enabled = True
 
 ---
 objects:
   - op_petition_single_pdf_bundle: ALDocumentBundle.using(elements=[op_petition, additional_cases, additional_incidents], filename="petition.pdf", title="Petition for Order of Protection")
-  - al_user_bundle: ALDocumentBundle.using(elements=[op_next_steps, op_instructions, cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, sheriff_cover_sheet, cook_sheriff_info_sheet, affidavit_pt_supervisor, efiling_exemption], filename="order_of_protection.pdf", title="All forms")
+  - sheriff_info_bundle: ALDocumentBundle.using(elements=[sheriff_cover_sheet, cook_sheriff_info_sheet], filename="cook_sheriff_info_sheet.pdf", title="Confidential Sheriff Information Sheet")
+  - al_user_bundle: ALDocumentBundle.using(elements=[op_next_steps, op_instructions, cook_dv_cover_sheet, op_petition_single_pdf_bundle, op_schools, emergency_op, plenary_op, op_summons, sheriff_info_bundle, affidavit_pt_supervisor, efiling_exemption], filename="order_of_protection.pdf", title="All forms")
   - al_court_bundle: ALDocumentBundle.using(elements=[efiling_exemption, cook_sheriff_info_sheet, op_summons, emergency_op, op_schools, op_petition_single_pdf_bundle, cook_dv_cover_sheet], filename="order_of_protection.pdf", title="Order of protection")
 
 ---
