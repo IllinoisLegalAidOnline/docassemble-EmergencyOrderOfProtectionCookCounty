@@ -1145,14 +1145,57 @@ review:
       **What should ${other_parties[0].name.full(middle="full")}'s parent or guardian be ordered to do?**
       ${ respondent_parent_order }
     show if: respondent_parent_help == "Yes"
-      
+  - Edit: other_parties[0].sex
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex:**
+      ${ other_parties[0].sex }
+  - Edit: other_parties[0].sex_other
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s other sex:**
+      ${ other_parties[0].sex_other }
+    show if: other_parties[0].sex == 'other'
+  - Edit: respondent_sex_at_birth
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
+      % if respondent_sex_at_birth == 'male':
+      Male
+      % else:
+      Female
+      % endif
   - Edit: other_parties[0].gender
     button: |
-      **What is ${other_parties[0].name.full(middle="full")}'s gender?**
-      % if other_parties[0].gender == 'other':
+      **What is ${other_parties[0].name.full(middle="full")}'s gender identity?**
+      
+      % if other_parties[0].gender['male'] == True:
+      * Male
+      % endif
+      % if other_parties[0].gender['female'] == True:
+      * Female
+      % endif
+      % if other_parties[0].gender['transfem'] == True:
+      * Transgender woman / Transfeminine
+      % endif
+      % if other_parties[0].gender['transmasc'] == True:
+      * Transgender man / Transmasculine
+      % endif
+      % if other_parties[0].gender['nonbinary'] == True:
+      * Nonbinary / Gender non-conforming
+      % endif
+      % if other_parties[0].gender['other'] == True:
+      * Other
+      % endif
+  - Edit: other_parties[0].gender
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s other gender identity:**
       ${ respondent_gender_other }
+    show if: other_parties[0].gender['other'] == True
+  - Edit: respondent_sex_at_birth
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
+      % if respondent_sex_at_birth == 'male':
+      Male
       % else:
-      ${ other_parties[0].gender }
+      Female
       % endif
   - Edit: other_parties[0].race
     button: |
@@ -1287,9 +1330,17 @@ review:
       % endif
   - Edit: other_parties[0].phone_number
     button: |
-      **${other_parties[0].name.full(middle="full")}'s phone number:**
+      **${other_parties[0].name.full(middle="full")}'s home phone number:**
       % if other_parties[0].phone_number != "":
       ${ phone_number_formatted(other_parties[0].phone_number) }      
+      % else:
+      ${ "do not know" }
+      % endif
+  - Edit: other_parties[0].mobile_number
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s cell number:**
+      % if other_parties[0].mobile_number != "":
+      ${ phone_number_formatted(other_parties[0].mobile_number) }      
       % else:
       ${ "do not know" }
       % endif
@@ -1301,7 +1352,15 @@ review:
       % else:
       ${ "do not know" }
       % endif
-      
+  - Edit: respondent_on_social_media
+    button: |
+      **Is ${other_parties[0].name.full(middle="full")} active on social media?**
+      ${ respondent_on_social_media }      
+  - Edit: respondent_social_media_accounts
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s social media accounts:**
+      ${ respondent_social_media_accounts }
+    show if: respondent_on_social_media == 'Yes'
   - Edit: knows_respondent_work
     button: |
       **Do you know ${other_parties[0].name.full(middle="full")}'s work info?**
@@ -1535,7 +1594,7 @@ review:
 
 
 ---
-id: shared kids revisit
+id: shared kids revisit review screen
 continue button field: shared_kids.revisit
 question: |
   Edit the minor children you have with ${other_parties[0].name.full(middle="full")}
@@ -1555,7 +1614,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: shared kids details
+id: shared kids details review screen
 continue button field: x.review_shared_child_details
 generic object: ALIndividual
 question: |
@@ -1579,7 +1638,7 @@ review:
       ${ word(yesno(x.protect)) }
 continue button label: Next
 ---
-id: petitioner kids revisit
+id: petitioner kids revisit review screen
 continue button field: petitioner_kids.revisit
 question: |
   Edit your minor children you **do not** have with ${other_parties[0].name.full(middle="full")} you want protected by this order
@@ -1599,7 +1658,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: other hh members revisit
+id: other hh members revisit review screen
 continue button field: other_hh_members.revisit
 question: |
   Edit the household members you want protected by this order
@@ -1619,7 +1678,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: incidents revisit
+id: incidents revisit review screen
 continue button field: incidents.revisit
 question: |
   Edit what happened
@@ -1644,7 +1703,7 @@ edit:
 delete buttons: True
 confirm: True
 ---
-id: incident details
+id: incident details review screen
 continue button field: x.review_incidents_details
 generic object: DAObject
 question: |
@@ -1664,7 +1723,7 @@ review:
       ${ x.name.text }
 continue button label: Next
 ---
-id: other ops revisit
+id: other ops revisit review screen
 continue button field: other_ops.revisit
 question: |
   Edit the other Orders of Protection against ${other_parties[0].name.full(middle="full")}
@@ -1685,7 +1744,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: edit other ops
+id: edit other ops review screen
 continue button field: x.review_other_op_details
 generic object: DAObject
 question: |
@@ -1710,7 +1769,7 @@ review:
 continue button label: Next
 
 ---
-id: other cases revisit
+id: other cases revisit review screen
 continue button field: other_cases.revisit
 question: |
   Edit the other court cases with ${other_parties[0].name.full(middle="full")}
@@ -1732,7 +1791,7 @@ delete buttons: True
 confirm: True
 
 ---
-id: other cases edit
+id: other cases edit review screen
 continue button field: x.review_other_cases_details
 generic object: DAObject
 question: |
@@ -1758,7 +1817,7 @@ continue button label: Next
 
 
 ---
-id: personal property revisit
+id: personal property revisit review screen
 continue button field: petitioner_personal_property.revisit
 question: |
   Edit the personal property you want to protect
@@ -1779,7 +1838,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: personal property edit
+id: personal property edit review screen
 continue button field: x.review_personal_property_details
 generic object: DAObject
 question: |
@@ -1795,14 +1854,7 @@ review:
       ${ word(yesno(x.respo_has)) } 
 continue button label: Next
 ---
-
-
-
-
-
-
----
-id: pets revisit
+id: pets revisit review screen
 continue button field: pets.revisit
 question: |
   Edit the pet you want to protect
@@ -1823,7 +1875,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: pet edit
+id: pet edit review screen
 continue button field: x.review_pet_details
 generic object: DAObject
 question: |
@@ -1838,12 +1890,8 @@ review:
       **Description:**
       ${ x.description } 
 continue button label: Next
-
-
-
-
 ---
-id: cell phone numbers revisit
+id: cell phone numbers revisit review screen
 continue button field: cell_numbers.revisit
 question: |
   Edit the phone numbers you want to separate
@@ -1864,7 +1912,7 @@ columns:
 delete buttons: True
 confirm: True
 ---
-id: cell number edit
+id: cell number edit review screen
 continue button field: x.review_cell_number_details
 generic object: DAObject
 question: |
@@ -1875,7 +1923,6 @@ review:
       **Cell phone number:**
       ${ phone_number_formatted(x.name.text)  }
 continue button label: Next
-
 
 ---
 id: basic info review screen
@@ -3039,15 +3086,50 @@ review:
       **What should ${other_parties[0].name.full(middle="full")}'s parent or guardian be ordered to do?**
       ${ respondent_parent_order }
     show if: respondent_parent_help == "Yes"
-      
+  - Edit: other_parties[0].sex
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex:**
+      ${ other_parties[0].sex }
+  - Edit: other_parties[0].sex_other
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s other sex:**
+      ${ other_parties[0].sex_other }
+    show if: other_parties[0].sex == 'other'
+  - Edit: respondent_sex_at_birth
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
+      % if respondent_sex_at_birth == 'male':
+      Male
+      % else:
+      Female
+      % endif
   - Edit: other_parties[0].gender
     button: |
-      **What is ${other_parties[0].name.full(middle="full")}'s gender?**
-      % if other_parties[0].gender == 'other':
-      ${ respondent_gender_other }
-      % else:
-      ${ other_parties[0].gender }
+      **What is ${other_parties[0].name.full(middle="full")}'s gender identity?**
+      
+      % if other_parties[0].gender['male'] == True:
+      * Male
       % endif
+      % if other_parties[0].gender['female'] == True:
+      * Female
+      % endif
+      % if other_parties[0].gender['transfem'] == True:
+      * Transgender woman / Transfeminine
+      % endif
+      % if other_parties[0].gender['transmasc'] == True:
+      * Transgender man / Transmasculine
+      % endif
+      % if other_parties[0].gender['nonbinary'] == True:
+      * Nonbinary / Gender non-conforming
+      % endif
+      % if other_parties[0].gender['other'] == True:
+      * Other
+      % endif
+  - Edit: other_parties[0].gender
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s other gender identity:**
+      ${ respondent_gender_other }
+    show if: other_parties[0].gender['other'] == True
   - Edit: other_parties[0].race
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s race?**
@@ -3181,9 +3263,17 @@ review:
       % endif
   - Edit: other_parties[0].phone_number
     button: |
-      **${other_parties[0].name.full(middle="full")}'s phone number:**
+      **${other_parties[0].name.full(middle="full")}'s home phone number:**
       % if other_parties[0].phone_number != "":
       ${ phone_number_formatted(other_parties[0].phone_number) }      
+      % else:
+      ${ "do not know" }
+      % endif
+  - Edit: other_parties[0].mobile_number
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s cell number:**
+      % if other_parties[0].mobile_number != "":
+      ${ phone_number_formatted(other_parties[0].mobile_number) }      
       % else:
       ${ "do not know" }
       % endif
@@ -3195,6 +3285,15 @@ review:
       % else:
       ${ "do not know" }
       % endif
+  - Edit: respondent_on_social_media
+    button: |
+      **Is ${other_parties[0].name.full(middle="full")} active on social media?**
+      ${ respondent_on_social_media }      
+  - Edit: respondent_social_media_accounts
+    button: |
+      **${other_parties[0].name.full(middle="full")}'s social media accounts:**
+      ${ respondent_social_media_accounts }
+    show if: respondent_on_social_media == 'Yes'
       
   - Edit: knows_respondent_work
     button: |
