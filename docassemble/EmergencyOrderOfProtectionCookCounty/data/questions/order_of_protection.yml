@@ -1575,6 +1575,8 @@ question: |
   Is ${other_parties[0].name.full(middle="full")} active on social media?
 subquestion: |
   If you know about ${other_parties[0].name.full(middle="full")}'s accounts, this could help the sheriff find them.
+  
+  This information **will not** appear on public court documents.
 fields:
   - Active on social media?: respondent_on_social_media
     datatype: radio
@@ -4321,7 +4323,7 @@ code: |
   if trial_court_index == -1:
     cook_dv_cover_sheet.enabled = True
     cook_sheriff_info_sheet.enabled = True
-    sheriff_cover_sheet.enabled = True
+    sheriff_cover_sheet.enabled = False # Adjust this once we get more info from sheriff
     sheriff_info_bundle.enabled = True
 
 ---
