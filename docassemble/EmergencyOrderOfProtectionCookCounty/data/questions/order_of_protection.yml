@@ -4176,7 +4176,7 @@ subquestion: |
   **${ format_datetime(new_ah_open, format='EEEE, MMMM d, yyyy, h:mm a')} to ${ format_datetime(new_ah_close, format='EEEE, MMMM d, yyyy, h:mm a')}**
   % endif
   
-  If you send your forms at other times, the clerk may not see your forms until the next after-hours session.
+  If you send your forms at other times, the clerk may not see your forms. **You must send the email when After-hours court is open or in the hour before it opens.**
 
   **Note:** It may take up to an hour or longer after you email your forms before a judge is ready to see you. Court staff will provide you with the after-hours Zoom information when it is time for your hearing. If you are not available when they contact you, you will have to reschedule. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
 
@@ -4214,7 +4214,7 @@ subquestion: |
   **${ format_datetime(new_ah_open, format='EEEE, MMMM d, yyyy, h:mm a')} to ${ format_datetime(new_ah_close, format='EEEE, MMMM d, yyyy, h:mm a')}**
   % endif
 
-  If you send your forms at other times, the clerk may not see your forms until the next after-hours session.
+  If you send your forms at other times, the clerk may not see your forms. **You must send the email when After-hours court is open or in the hour before it opens.**
 
   **Note:** It may take up to an hour or longer before a judge is ready to see you.  If you are not available when they contact you, you will have to reschedule. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
 
