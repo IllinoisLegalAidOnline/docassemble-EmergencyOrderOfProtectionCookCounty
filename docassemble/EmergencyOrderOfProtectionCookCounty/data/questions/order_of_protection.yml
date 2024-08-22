@@ -1630,8 +1630,8 @@ fields:
       - I don't know.: I don't know.
   - List their accounts: respondent_social_media_accounts
     input type: area
-    rows: 3
-    maxlength: 100
+    rows: 5
+    maxlength: 180
     help: |
       Enter as much information as you can including app, website, and username if you know it.
     show if:
@@ -3555,8 +3555,8 @@ subquestion: |
 fields:
   - Service information: service_information
     input type: area
-    rows: 5
-    maxlength: 200
+    rows: 10
+    maxlength: 400
     required: False
     help: |
       Include as much information as possible, such as best hours to serve, type of building, etc.
@@ -3737,18 +3737,18 @@ fields:
     required: False
     help: |
       This could be a name from an earlier marriage or a nickname. If there is more than one, separate by commas.
-  - Is ${other_parties[0].name.full(middle="full")} on court-ordered probation?: respondent_on_probation
-    datatype: radio
-    choices:
-      - Yes: Yes
-      - No: No
-      - I don't know.: idk
-  - Probation in which county?: respondent_probation_county
-    required: False
-    maxlength: 25
-    show if: 
-      variable: respondent_on_probation
-      is: "Yes"
+#  - Is ${other_parties[0].name.full(middle="full")} on court-ordered probation?: respondent_on_probation
+#    datatype: radio
+#    choices:
+#      - Yes: Yes
+#      - No: No
+#      - I don't know.: idk
+#  - Probation in which county?: respondent_probation_county
+#    required: False
+#    maxlength: 25
+#    show if: 
+#      variable: respondent_on_probation
+#      is: "Yes"
 ---
 id: respondent caution
 question: |
@@ -3762,13 +3762,16 @@ fields:
     required: False
     choices:
       - Has a history of mental illness.: illness
+      - Is now or has been suicidal.: suicidal
       - Is likely to be under the influence of alcohol.: alcohol
       - Is likely to be under the influence of drugs.: drugs
       - Is likely to carry a weapon.: armed
       - Has weapons in the home.: home
   - Type and location of weapons: weapons_description
     required: False
-    maxlength: 40
+    input type: area
+    rows: 5
+    maxlength: 180
     js show if: |
       val("caution_reasons['armed']") == true || val("caution_reasons['home']") == true
 ---
@@ -4404,7 +4407,7 @@ code: |
   if trial_court_index == -1:
     cook_dv_cover_sheet.enabled = True
     cook_sheriff_info_sheet.enabled = True
-    sheriff_cover_sheet.enabled = False # Adjust this once we get more info from sheriff
+    sheriff_cover_sheet.enabled = True
     sheriff_info_bundle.enabled = True
     
   if filing_available:  
@@ -6567,9 +6570,9 @@ attachment:
     - "respondent_firearms_on_person": ${ True if caution_reasons['armed'] == True else "" }
     - "respondent_weapons_in_home": ${ True if caution_reasons['home'] == True else "" }
     - "respondent_weapons_description": ${ weapons_description if caution_reasons['armed'] or caution_reasons['home'] == True else "" }        
-    - "respondent_suicidal": ${ True if firearms_reasons['suicidal'] == True else ''  }    
-    - "respondent_on_probation":  ${ True if respondent_on_probation == "Yes" else ''  } 
-    - "respondent_probation_county":  ${ respondent_probation_county if respondent_on_probation == "Yes" else ''  } 
+    - "respondent_suicidal": ${ True if caution_reasons['suicidal'] == True else ''  }    
+#    - "respondent_on_probation":  ${ True if respondent_on_probation == "Yes" else ''  } 
+#    - "respondent_probation_county":  ${ respondent_probation_county if respondent_on_probation == "Yes" else ''  } 
     
     - "respondent_employer": |
         % if knows_respondent_work:
@@ -6583,7 +6586,12 @@ attachment:
         % else:
         ${ "" }
         % endif
-        
+    - "respondent_work_hours": |
+        % if knows_respondent_work and respondent_work_type != "":
+        ${ other_parties[0].work_hours }
+        % else:
+        ${ "" }
+        % endif
     - "service_address_line_1": |
         % if service_address_choice == "other":
         ${ service_address.line_one(bare=True) }
@@ -6594,11 +6602,11 @@ attachment:
         % endif
     - "service_city": |
         % if service_address_choice == "other":
-        ${ service_address.city }
+        ${ service_address.city }, ${ service_address.state }
         % elif service_address_choice == "home":
-        ${ other_parties[0].address.city }        
+        ${ other_parties[0].address.city }, ${ other_parties[0].address.state }        
         % else:
-        ${ other_parties[0].work_address.city }        
+        ${ other_parties[0].work_address.city }, ${ other_parties[0].work_address.state }        
         % endif
         
     - "last_known_address": |
@@ -6607,7 +6615,7 @@ attachment:
         % endif
     - "last_known_city": |
         % if knows_respondent_home_last and knows_respondent_home == False:
-        ${ other_parties[0].address.city }
+        ${ other_parties[0].address.city }, ${ other_parties[0].address.state }
         % endif
 
     - "respondent_work_address": |
@@ -6618,7 +6626,7 @@ attachment:
         % endif
     - "respondent_work_city": |
         % if knows_respondent_work:
-        ${ other_parties[0].work_address.city }
+        ${ other_parties[0].work_address.city }, ${ other_parties[0].work_address.state }
         % else:
         ${ "do not know" }
         % endif
@@ -6655,7 +6663,7 @@ attachment:
     - "cook_vehicle_model": ${ respondent_car_model }
     #- "cook_vehicle_make": ${ cook_vehicle_make }
     #- "cook_vehicle_model": ${ cook_vehicle_model }
-    - "cook_vehicle_year": ${ cook_vehicle_year }
+    - "cook_vehicle_year": ${ cook_vehicle_year if cook_vehicle_year != 0 else "" }
     - "cook_vehicle_color": ${ cook_vehicle_color }
     - "cook_vehicle_plate": ${ cook_vehicle_plate }
     - "cook_vehicle_state": ${ state_name(cook_vehicle_state) }
