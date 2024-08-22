@@ -25,6 +25,14 @@ default screen parts:
     % endif
     
     Feedback, suggestions, or comments? [**Let us know**](${ interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url , easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1) } ){:target="_blank"}.
+
+    % if nav.get_section() != None:
+    % if nav.get_section() != "section_intro" and nav.get_section() != "section_download":
+    % if "review screen" not in current_context().question_id:
+    ${ action_button_html(url_action('review_answers'), label=':edit: Edit answers', color='success', size="md") }
+    % endif
+    % endif
+    % endif
 ---
 objects:
   - users: ALPeopleList.using(there_are_any=True)
@@ -657,16 +665,16 @@ subquestion: |
 
   ${ collapse_template(cook_courthouse_location_help) } 
 
-  You can also contact the Illinois Domestic Violence Hotline at 877-863-6338. They can help with:
+  You can also contact the Illinois Domestic Violence Hotline at 877-863-6338. They are available 24/7 and can help with:
   
   * Emergency transportation,
   * Emergency housing,
   * Safety planning, and
   * Connection to advocates and attorneys.
 
-  Finally, the Cook County Legal Advocacy Hotline at 708-689-3422 can help with:
+  Finally, the Cook County Legal Advocacy Hotline at 708-689-3422 is available Monday through Friday from 8:30 AM and 4:30 PM, and Saturdays from 12 noon to 6:00 PM. They can help with:
   
-  * Remote assistance with OP proceedings,
+  * Remote assistance with Order of Protection proceedings,
   * Safety planning, and
   * Connection to additional resources including a legal aid attorney.
 
@@ -3859,7 +3867,7 @@ question: |
 subquestion: |
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
 
-  You will not receive an order from the court until you see a judge.
+  **You will not receive an order from the court until you see a judge.**
 
   **Note:** If you want to see an after-hours judge, click **Email your forms to the clerk**.
 
@@ -3893,7 +3901,7 @@ question: |
 subquestion: |
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
 
-  You will not receive an order from the court until you see a judge.
+  **You will not receive an order from the court until you see a judge.**
 
   **Note:** If you want to see an after-hours judge, refresh this page when After-hours court is in session. Then follow the instructions to email your forms to the clerk.
 
@@ -3928,7 +3936,7 @@ question: |
 subquestion: |
   Your forms are ready. View and download your forms below. Click **Make changes** to fix any mistakes.
 
-  You will not receive an order from the court until you see a judge.
+  **You will not receive an order from the court until you see a judge.**
 
   % if clerk_email_sent_ok:
   **Note:** Your forms were already emailed to the clerk.
@@ -4343,7 +4351,7 @@ objects:
   - sheriff_cover_sheet: ALDocument.using(title="Sheriff Information Cover Sheet", filename="sheriff_info_cover_sheet.pdf", has_addendum=False)
 ---
 code: |
-  op_next_steps.enabled = True
+  op_next_steps.enabled = False
   op_instructions.enabled = True
   op_petition.enabled = True
   op_petition_single_pdf_bundle.enabled = True
@@ -4395,6 +4403,9 @@ code: |
     cook_sheriff_info_sheet.enabled = True
     sheriff_cover_sheet.enabled = False # Adjust this once we get more info from sheriff
     sheriff_info_bundle.enabled = True
+    
+  if filing_available:  
+    op_next_steps.enabled = True
 
 ---
 objects:
@@ -4412,10 +4423,30 @@ attachment:
   editable: False
   pdf template file: op_instructions.pdf
   fields:
-    - "cook_eop_warning__1": ${ cook_instructions_warning } 
-    - "cook_eop_warning__2": ${ cook_instructions_warning } 
-    - "cook_eop_warning__3": ${ cook_instructions_warning } 
-    - "cook_eop_warning__4": ${ cook_instructions_warning } 
+    - "cook_eop_warning__1": |
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
+    - "cook_eop_warning__2": | 
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
+    - "cook_eop_warning__3": | 
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
+    - "cook_eop_warning__4": |
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
     - "fake": ${ "" }
 ---
 attachment:
