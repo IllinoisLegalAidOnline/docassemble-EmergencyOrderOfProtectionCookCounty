@@ -354,7 +354,10 @@ code: |
   #clean_up
   forms_assembling
   snapshot_forms
-  get_docs_screen
+  if filing_available:
+    get_docs_screen
+  else:
+    get_docs_screen_event
   if confirm_email_send_now:
     self_preparation  
     clerk_email_prep
@@ -3858,7 +3861,7 @@ subquestion: |
   
   &nbsp;
 ---
-if filing_available:
+#if filing_available:
 id: get docs screen
 continue button field: get_docs_screen
 continue button label: ":file-export: Email your forms to the clerk"
@@ -3894,7 +3897,7 @@ under: |
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=user_info().question_id, easy_form_variable=user_info().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 ---
-if !filing_available:
+#if !filing_available:
 id: get docs screen
 question: |
   Download forms
@@ -3916,7 +3919,7 @@ subquestion: |
   **Note:** If you want to see an after-hours judge, refresh this page when After-hours court is in session. Then follow the instructions to email your forms to the clerk.
   
   Thank you for using ILAO Easy Forms!
-event: get_docs_screen
+event: get_docs_screen_event
 under: |
   ###### **Worried about doing this on your own?**  
   ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
@@ -4293,7 +4296,7 @@ question: |
 subquestion: |
   **Your forms were sent to the clerk.**
   
-  If you sent them in time for after-hours court session, they will contact you to set up a court hearing with the judge. If you sent them outside of that time frame, you may need to follow up.
+  If you sent them during an after-hours court session or in the hour before, they will contact you to set up a court hearing with the judge. If you sent them outside of that time frame, you may need to follow up.
 
   **Important:** Read the "Next steps" document for what to do next. 
 
