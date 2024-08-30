@@ -1147,23 +1147,24 @@ review:
     show if: respondent_parent_help == "Yes"
   - Edit: other_parties[0].sex
     button: |
-      **${other_parties[0].name.full(middle="full")}'s sex:**
+      **${other_parties[0].name.full(middle="full")}'s sex (public):**
       ${ other_parties[0].sex }
   - Edit: other_parties[0].sex_other
     button: |
-      **${other_parties[0].name.full(middle="full")}'s other sex:**
+      **${other_parties[0].name.full(middle="full")}'s other sex (public):**
       ${ other_parties[0].sex_other }
     show if: other_parties[0].sex == 'other'
   - Edit: respondent_sex_at_birth
     button: |
       **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
-      % if respondent_sex_at_birth == '':
+      % if respondent_sex_at_birth == "None":
       None entered
-      % endif
+      % else:
       % if respondent_sex_at_birth == 'male':
       Male
       % else:
       Female
+      % endif
       % endif
   - Edit: other_parties[0].gender
     button: |
@@ -1195,17 +1196,6 @@ review:
       **${other_parties[0].name.full(middle="full")}'s other gender identity:**
       ${ respondent_gender_other }
     show if: other_parties[0].gender['other'] == True
-  - Edit: respondent_sex_at_birth
-    button: |
-      **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
-      % if respondent_sex_at_birth == '':
-      None entered
-      % endif
-      % if respondent_sex_at_birth == 'male':
-      Male
-      % else:
-      Female
-      % endif
   - Edit: other_parties[0].race
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s race?**
@@ -3100,20 +3090,24 @@ review:
     show if: respondent_parent_help == "Yes"
   - Edit: other_parties[0].sex
     button: |
-      **${other_parties[0].name.full(middle="full")}'s sex:**
+      **${other_parties[0].name.full(middle="full")}'s sex (public):**
       ${ other_parties[0].sex }
   - Edit: other_parties[0].sex_other
     button: |
-      **${other_parties[0].name.full(middle="full")}'s other sex:**
+      **${other_parties[0].name.full(middle="full")}'s other sex (public):**
       ${ other_parties[0].sex_other }
     show if: other_parties[0].sex == 'other'
   - Edit: respondent_sex_at_birth
     button: |
       **${other_parties[0].name.full(middle="full")}'s sex assigned at birth:**
+      % if respondent_sex_at_birth == "None":
+      None entered
+      % else:
       % if respondent_sex_at_birth == 'male':
       Male
       % else:
       Female
+      % endif
       % endif
   - Edit: other_parties[0].gender
     button: |

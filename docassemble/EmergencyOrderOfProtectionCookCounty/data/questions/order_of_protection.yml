@@ -28,7 +28,9 @@ default screen parts:
 
     % if nav.get_section() != None:
     % if nav.get_section() != "section_intro" and nav.get_section() != "section_download":
-    % if "review screen" not in current_context().question_id:
+    % if current_context().question_id == None:
+    ${ action_button_html(url_action('review_answers'), label=':edit: Edit answers', color='success', size="md") }
+    % elif "review screen" not in current_context().question_id:
     ${ action_button_html(url_action('review_answers'), label=':edit: Edit answers', color='success', size="md") }
     % endif
     % endif
@@ -3579,14 +3581,14 @@ question: |
 subquestion: |
   This information is used to help law enforcement identify ${other_parties[0].name.full(middle="full")} and enforce the Order of Protection. If you do not know this information, you can leave it blank.
 fields:
-  - Sex (will be public, used by any law enforement): other_parties[0].sex
+  - Sex (will be public, used by any law enforcement): other_parties[0].sex
     datatype: radio
     required: False
     choices:
       - Male: Male
       - Female: Female
       - Other: other
-  - ${other_parties[0].name.full(middle="full")}'s sex (will be public, used by any law enforement): other_parties[0].sex_other
+  - ${other_parties[0].name.full(middle="full")}'s sex (will be public, used by any law enforcement): other_parties[0].sex_other
     maxlength: 20
     required: False
     show if:
@@ -5381,7 +5383,7 @@ attachment:
     - "hide_address": ${ hide_address }
     - "notice_address_one_line": ${ users[0].address.on_one_line(bare=True) }
     - "petitioner_notice_email": ${ users[0].email if users[0].email_notice else ""}
-    - "respondent_gender": ${ other_parties[0].sex_other if other_parties[0].sex == 'other' else other_parties[0].gender }
+    - "respondent_gender": ${ other_parties[0].sex_other if other_parties[0].sex == 'other' else other_parties[0].sex }
     - "respondent_race": ${ respondent_race_other if other_parties[0].race == 'other' else other_parties[0].race }
     - "respondent_dob": |
         % if knows_respondent_dob == 'exact' and other_parties[0].birthdate != "":
@@ -6638,11 +6640,11 @@ attachment:
     - "service_alt_city": |
         % if has_second_service_address == True:
         % if second_service_address_choice == "other":
-        ${ second_service_address.city }
+        ${ second_service_address.city }, ${ second_service_address.state }
         % elif second_service_address_choice == "home":
-        ${ other_parties[0].address.city }        
+        ${ other_parties[0].address.city }, ${ other_parties[0].address.state } 
         % else:
-        ${ other_parties[0].work_address.city }        
+        ${ other_parties[0].work_address.city }, ${ other_parties[0].work_address.state }        
         % endif
         % endif
     - "respondent_phone": ${ phone_number_formatted(other_parties[0].phone_number) }
