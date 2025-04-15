@@ -1433,7 +1433,7 @@ review:
 
   - Edit: has_other_ops
     button: |
-      **Are there other Orders of protections against ${other_parties[0].name.full(middle="full")}?**
+      **Are there other Orders of Protection against ${other_parties[0].name.full(middle="full")}?**
       ${ has_other_ops }
       
   - Edit: other_ops.revisit
@@ -3376,7 +3376,7 @@ review:
 
   - Edit: has_other_ops
     button: |
-      **Are there other Orders of protections against ${other_parties[0].name.full(middle="full")}?**
+      **Are there other Orders of Protection against ${other_parties[0].name.full(middle="full")}?**
       ${ has_other_ops }
       
   - Edit: other_ops.revisit
