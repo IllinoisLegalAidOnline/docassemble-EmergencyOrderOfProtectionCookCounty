@@ -102,7 +102,6 @@ mandatory: True
 code: |
   nav.set_section('section_intro')
   sees_nav_bar
-  forms_update
   snapshot_start
   instructions
   cook_after_hours
@@ -438,7 +437,7 @@ terms:
 # thought 1.4.64 Docassemble update made "mandatory: True" not required but oh well
 mandatory: True
 code: |
-  dow_full = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  dow_full = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
   dow_abb = ['Sun.', 'Mon.', 'Tues.', 'Wed.', 'Thur.', 'Fri.', 'Sat.']
   set_days_of_week = True
 ---
@@ -463,29 +462,6 @@ subquestion: |
   * If you need to exit this program, click the red **Escape** button at the top of the screen.
   * Learn about [**safety while using the Internet**](https://www.thehotline.org/help/tech-social-media-safety/).
 field: sees_nav_bar
----
-id: may 2025 forms update
-continue button field: forms_update
-question: |
-  Important May 11, 2025 forms update
-subquestion: |
-  **New statewide Order of Protection forms are now available.**
-    
-  ILAO is working hard to update our Order of Protection Easy Forms. If you prefer to use the latest forms, you can download them from the [**Illinois Courts website**](https://www.illinoiscourts.gov/forms/approved-forms/forms-approved-forms-circuit-court/order-of-protection/).
----
-
-#id: lhi hotdocs transition info
-#continue button field: lhi_transition
-#question: |
-#  Note about this new program
-#subquestion: |
-#  We've updated this program so that it is easier-to-use and mobile-friendly.
-#
-#  **Note:** The old program will be retired July 9, 2024. If you have saved answers on that version of the program, you can get to them by visiting [**LawHelp Interactive**](https://lawhelpinteractive.org/Interview/InterviewHome?templateId=8207). 
-#
-#  The earlier version of the program looked like this:
-#  
-#  [FILE hotdocs_eop.png, 100%, Previous Emergency Order of Protection program]
 ---
 id: email preview
 continue button field: email_preview
@@ -580,8 +556,6 @@ subquestion: |
   % else:
   None
   % endif
-
-
 ---
 id: instructions
 continue button field: instructions
@@ -649,7 +623,7 @@ continue button field: important_op_info
 question: |
   Things you should know
 subquestion: |
-  The person who caused the abuse is called **the Respondent**. In court, the judge will use this word to refer to the abuser. This program and the forms will do the same.
+  The person who caused the abuse is called the **Respondent**. In court, the judge will use this word to refer to the abuser. This program and the forms will do the same.
 
   **You will need to include an address where the Respondent can be found.** This is so the sheriff can deliver the court papers. Delivery of the court papers is called **service.** This might be where the Respondent lives, works, or a place where they stay. **Note: the Respondent will get a copy of all the court forms, except for the ones that are confidential like school or daycare location.**
 
@@ -786,43 +760,86 @@ question: |
 subquestion: |
   If you are asking for an Order of Protection for someone other than yourself, select how **they** are related to the person who caused the abuse.
   
-  You can check more than one.
+  You can check more than one. Use the current relationship where possible.
 fields:
-  - no label: relationship_type
-    datatype: checkboxes
-    choices:
-      - I am their spouse.: se
-      - I am their ex-spouse.: xs
-      - I am their boyfriend, girlfriend, or romantic partner (including ex-).: bg
-      - We have a child in common (never married).: cc
-      - We share or shared a living space.: cs
-        help: |
-          Example: We share a common area like a kitchen. This would not apply if you just had apartments in the same building.
-      - I am their child.: ch
-      - I am their parent.: pa
-      - I am their brother, sister, or sibling.: sb
-      - They are another family member.: of
-        help: |
-          Examples: Uncle, aunt, or cousin.
-      - I am their step child.: sc
-      - I am their step brother, step sister, or step sibling.: ss
-      - I am their step parent.: sp
-      - I am their grandchild.: gc
-      - I am their grandparent.: gp
-      - I am their in-law.: il
-      - I have a disability and receive care from the abuser.: pd
-      - I am a high-risk adult with disabilities and the abuser is my personal caregiver.: pc
-        help: |
-          A **high risk adult with disabilities** is a person aged 18 or over whose physical or mental disability keeps them from protecting themself from abuse, neglect, or exploitation.
-      - I have a disability and the abuser is my personal assistant or caregiver.: pr
-      - The abuser is a family or household member of my foster child.: f
-      - The abuser is a family or household member of my adopted child, or of my prospective adopted child.: a
-      - The abuser is a family or household member of a child that I am the legally-appointed custodian of.: l
+  - I am their boyfriend, girlfriend, or romantic partner (including ex-).: relationship_bg
+    datatype: yesnowide
+  - We have children together and were never married.: relationship_cc
+    datatype: yesnowide
+  - We have or might have children together.: relationship_ac
+    datatype: yesnowide
+  - We are related through a current or past marriage.: relationship_ma
+    help: |
+      Select this if you are a spouse, ex-spouse, in-law, step-child, step-brother, step-sister, step-sibling, or other family member of the person who caused the abuse.
+    datatype: yesnowide
+  - I am their spouse.: relationship_se
+    datatype: yesno
+    show if: relationship_ma
+  - I am their ex-spouse.: relationship_xs
+    datatype: yesno
+    show if: relationship_ma
+  - I am their in-law.: relationship_il
+    datatype: yesno
+    show if: relationship_ma
+  - I am their step child.: relationship_sc
+    datatype: yesno
+    show if: relationship_ma
+  - I am their step brother, step sister, or step sibling.: relationship_ss
+    datatype: yesno
+    show if: relationship_ma
+  - They are another family member.: relationship_ofm
+    datatype: yesno
+    show if: relationship_ma
+  - We share or shared a living space.: relationship_cs
+    datatype: yesnowide
+    help: |
+      Example: We share a common area like a kitchen. This would not apply if you just had apartments in the same building.
+  - We are related through blood.: relationship_bl
+    datatype: yesnowide
+    help: |
+      Select this if you are a child, parent, brother, sister, sibling, grandchild, grandparent, or other family member of the person who caused the abuse.
+  - I am their child.: relationship_ch
+    datatype: yesno
+    show if: relationship_bl
+  - I am their parent.: relationship_pa
+    datatype: yesno
+    show if: relationship_bl
+  - I am their brother, sister, or sibling.: relationship_sb
+    datatype: yesno
+    show if: relationship_bl
+  - I am their grandchild.: relationship_gc
+    datatype: yesno
+    show if: relationship_bl
+  - I am their grandparent.: relationship_gp
+    datatype: yesno
+    show if: relationship_bl
+  - They are another family member.: relationship_ofb
+    datatype: yesno
+    help: |
+      Examples: Uncle, aunt, or cousin.
+    show if: relationship_bl
+  - We have a blood relationship through a child.: relationship_bk
+    datatype: yesnowide
+  - The abuser is a family or household member of my adopted, prospective adopted, or foster child.: relationship_a
+    datatype: yesnowide
+  - The abuser is a family or household member of a child that I am the legally-appointed guardian or custodian of.: relationship_l
+    datatype: yesnowide
+  - The abuser is my personal caregiver, and I am a high-risk adult with disabilities or otherwise need care.: relationship_pc
+    datatype: yesnowide
+    help: |
+      A **high risk adult with disabilities** is a person aged 18 or over whose physical or mental disability keeps them from protecting themself from abuse, neglect, or exploitation.
+
 validation code: |
-  if relationship_type['se'] == True and relationship_type['cc'] == True:
-    validation_error("You have both married (spouse) and never married options selected. Please adjust your answers.")
-  if relationship_type['xs'] == True and relationship_type['cc'] == True:
-    validation_error("You have both formerly married (ex-spouse) and never married options selected. Please adjust your answers.")
+  if relationship_ma:
+    if relationship_se == True and relationship_cc == True:
+      validation_error('You selected both "never married" and "related through marriage" (spouse). Please adjust your answers.', field="relationship_cc")
+    if relationship_xs == True and relationship_cc == True:
+      validation_error('You selected both "never married" and "related through marriage" (ex-spouse). Please adjust your answers.', field="relationship_cc")
+    if not relationship_se and not relationship_xs and not relationship_il and not relationship_sc and not relationship_ss and not relationship_ofm:
+      validation_error('Select a relationship through marriage.', field="relationship_ma")
+  if relationship_bl:
+    if not relationship_ch and not relationship_pa and not relationship_sb and not relationship_gc and not relationship_gp and not relationship_ofb:
+      validation_error('Select a relationship through blood.', field="relationship_bl")
 ---
 # removed after relationship answers reworded
 template: relationship_example
@@ -832,6 +849,47 @@ content: |
   If you want an Order of Protection against your mother, select **Child** because you are the child of that person.
   
   If you want an Order of Protection against the father of your foster child, select **Family or household member of my foster child**.
+---
+depends on:
+  - relationship_bg
+  - relationship_cc
+  - relationship_ac
+  - relationship_ma
+  - relationship_se
+  - relationship_xs
+  - relationship_il
+  - relationship_sc
+  - relationship_ss
+  - relationship_ofm
+  - relationship_cs
+  - relationship_bl
+  - relationship_ch
+  - relationship_pa
+  - relationship_sb
+  - relationship_gc
+  - relationship_gp
+  - relationship_ofb
+  - relationship_bk
+  - relationship_a
+  - relationship_l
+  - relationship_pc
+code: |
+  relationship_list = [
+      relationship_bg,
+      relationship_cc,
+      relationship_ac,
+      relationship_ma,
+      relationship_cs,
+      relationship_bl,
+      relationship_bk,
+      relationship_a,
+      relationship_l,
+      relationship_pc
+  ]
+  if any(relationship_list):
+    has_required_relationship = True
+  else:
+    has_required_relationship = False
 ---
 id: not proper relationship
 event: other_relief
@@ -890,9 +948,7 @@ fields:
     datatype: radio
     choices:
       - Yes, I will enter the date.: exact
-      - I know some of it.: some
-        help: |
-          For example, "June 3rd" or "Summer of 1990."
+      - I can enter how old I think they are.: some
       - I don't know it.: idk
         help: |
           % if trial_court_index == -1:
@@ -906,8 +962,8 @@ fields:
     show if: 
       variable: knows_respondent_dob
       is: exact
-  - What you know about ${other_parties[0].name.full(middle="full")}'s date of birth: other_parties[0].birthdate_info
-    maxlength: 25
+  - How old do you think ${other_parties[0].name.full(middle="full")} is?: other_parties[0].approx_age
+    maxlength: 20
     show if:
       variable: knows_respondent_dob
       is: some
@@ -963,9 +1019,13 @@ fields:
     datatype: yesnowide
     help: |
       **Other household members** include spouses, former spouses, parents, children, stepchildren and other persons related by blood or by present or prior marriage, persons who share or formerly shared a common dwelling, persons who have or allegedly have a child in common, persons who share or allegedly share a blood relationship through a child, persons who have or have had a dating or engagement relationship, persons with disabilities and their personal assistants, and caregivers. 
+  - A minor child I am filing on behalf of. I am not seeking protection for myself.: protect_obo_minor
+    datatype: yesnowide
 validation code: |
-  if not (protect_petitioner or protect_shared_kids or protect_petitioner_kids or protect_dependent_adult or protect_high_risk_adult or protect_other_hh_members):
-    validation_error("Please select at least one choice to continue.", field="protect_other_hh_members")
+  if not (protect_petitioner or protect_shared_kids or protect_petitioner_kids or protect_dependent_adult or protect_high_risk_adult or protect_other_hh_members or protect_obo_minor):
+    validation_error("Select at least one choice to continue.", field="protect_obo_minor")
+  if protect_petitioner and protect_obo_minor:
+    validation_error("Select this only if you are filing on behalf of a minor child and not for yourself.", field="protect_obo_minor")
 ---
 sets:
   - shared_kids[0].name.first
@@ -976,7 +1036,7 @@ id: name of first child with respondent
 question: |
   Who is your minor child with ${other_parties[0].name.full(middle="full")}?
 subquestion: |
-  The statewide Order of Protection forms have space for up to 4 minor children with the Respondent.
+  The statewide Order of Protection forms have space for up to 6 minor children with the Respondent.
 fields:
   - code: |
       shared_kids[0].name_fields()
@@ -1094,6 +1154,12 @@ fields:
     help: |
       This is where the child currently lives.
     code: states_list()
+  - note: |
+      ${ collapse_template(legal_parentage_help) }
+  - Your legal parentage has already been established.: x.pet_parentage
+    datatype: yesnomaybe
+  - ${other_parties[0].name.full(middle="full")}'s legal parentage has already been established.: x.res_parentage
+    datatype: yesnomaybe
   - Include as a protected person?: x.protect
     datatype: yesnoradio
     help: |
@@ -1113,7 +1179,7 @@ code: |
   shared_kids[i].complete = True
 ---
 code: |
-  if shared_kids.number_gathered() >= 4:
+  if shared_kids.number_gathered() >= 6:
     shared_kids.there_is_another = False
 ---
 sets:
@@ -1139,6 +1205,18 @@ question: |
 fields:
   - code: |
       high_risk_adult.name_fields()
+---
+sets:
+  - obo_minor.name.first
+  - obo_minor.name.middle
+  - obo_minor.name.last
+  - obo_minor.name.suffix
+id: name of minor filing on behalf of
+question: |
+  Who is the minor child you want protected by this order?
+fields:
+  - code: |
+      obo_minor.name_fields()
 ---
 id: order type
 question: |
@@ -1188,10 +1266,23 @@ question: |
   Tell us about the ${ ordinal(i) } Order of Protection
 fields:
   - Names of people involved (separate by commas): other_ops[i].name.text
+    maxlength: 35
+    help: |
+      The form does not have much room. You may need to abbreviate or use initials.
   - State: other_ops[i].state
     code: |
       states_list()
   - County: other_ops[i].county
+    code: |
+      court_list._load_courts()["address_county"].unique()      
+    js show if: |
+      val('other_ops[i].state') === "IL"
+  - County: other_ops[i].county
+    maxlength: 25
+    js show if: |
+      val('other_ops[i].state') != "IL"
+  - Case number: other_ops[i].case_number
+    maxlength: 20
   - Year: other_ops[i].year
     input type: combobox
     datatype: integer
@@ -1200,6 +1291,8 @@ fields:
     max: ${ today().year }
     code: |
       reversed(range(today().year-120, today().year+1))
+  - Is the case still ongoing?: other_ops[i].is_pending
+    datatype: yesnoradio
 ---
 id: more ops
 question: |
@@ -1221,7 +1314,9 @@ code: |
   other_ops[i].name.text
   other_ops[i].state
   other_ops[i].county
+  other_ops[i].case_number
   other_ops[i].year
+  other_ops[i].is_pending
   other_ops[i].complete = True
 ---
 code: |
@@ -1240,15 +1335,14 @@ subquestion: |
   * Divorce
   * Custody
   * Child support
-  * Paternity or parentage
+  * Parentage or paternity
   * Parenting time
   * Guardianship
   * Adoption
+  * Criminal
   * Abuse and neglect
-  * Domestic battery
-  * Violation of an Order of Protection.
   
-  **Note:** do not include other Orders of Protection.
+  **Note:** Do not include other Orders of Protection.
 fields:
   - Other court cases?: has_other_cases
     datatype: radio
@@ -1261,25 +1355,39 @@ fields:
 id: other cases detail
 question: |
   Tell us about the ${ ordinal(i) } court case
+subquestion: |
+  Examples include:
+  
+  * Divorce
+  * Custody
+  * Child support
+  * Parentage or paternity
+  * Parenting time
+  * Guardianship
+  * Adoption
+  * Criminal
+  * Abuse and neglect
+  
+  **Note:** Do not include other Orders of Protection.
 fields:
-  - Type of court case: other_cases[i].name.text
+  - Names of people involved (separate by commas): other_cases[i].name.text
+    maxlength: 35
     help: |
-      Examples include:
-      
-      * Divorce
-      * Custody
-      * Child support
-      * Paternity or parentage
-      * Parenting time
-      * Guardianship
-      * Adoption
-      * Abuse and neglect
-      * Domestic battery
-      * Violation of an Order of Protection.
+      The form does not have much room. You may need to abbreviate or use initials.
   - State: other_cases[i].state
     code: |
       states_list()
   - County: other_cases[i].county
+    code: |
+      court_list._load_courts()["address_county"].unique()      
+    js show if: |
+      val('other_cases[i].state') === "IL"
+  - County: other_cases[i].county
+    maxlength: 25
+    js show if: |
+      val('other_cases[i].state') != "IL"
+  - Case number: other_cases[i].case_number
+    maxlength: 20
   - Year: other_cases[i].year
     input type: combobox
     datatype: integer
@@ -1288,6 +1396,8 @@ fields:
     max: ${ today().year }
     code: |
       reversed(range(today().year-120, today().year+1))
+  - Is the case still ongoing?: other_cases[i].is_pending
+    datatype: yesnoradio
 ---
 id: more cases
 question: |
@@ -1305,17 +1415,17 @@ choices:
   - No: False
 ---
 code: |
+  other_cases[i].name.text
   other_cases[i].state
   other_cases[i].county
+  other_cases[i].case_number
   other_cases[i].year
+  other_cases[i].is_pending
   other_cases[i].complete = True
 ---
 code: |
   if other_cases.number_gathered() >= 9:
     other_cases.there_is_another = False
----
-
-
 ---
 id: incidents intro
 continue button field: incidents_intro
@@ -1410,7 +1520,7 @@ id: more incidents
 question: |
   Are there any more incidents of abuse you would like to list?
 subquestion: |
-  You can enter up to 9 incidents in total.
+  You can enter up to 12 incidents in total.
   % if len(incidents.elements) == 1:  
   So far you told us about 1 incident. 
   % else:
@@ -1428,7 +1538,7 @@ code: |
   incidents[i].complete = True
 ---
 code: |
-  if incidents.number_gathered() >= 9:
+  if incidents.number_gathered() >= 12:
     incidents.there_is_another = False
 ---
 id: no abuse
