@@ -4447,6 +4447,7 @@ attachment:
   editable: False
   pdf template file: op_instructions.pdf
   fields:
+    - "fake": ${ "" }
     - "cook_eop_warning__1": |
         % if filing_available:
         ${ cook_instructions_warning }
@@ -4471,7 +4472,30 @@ attachment:
         % else:
         ${ "" }
         % endif
-    - "fake": ${ "" }
+    - "cook_eop_warning__5": |
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
+    - "cook_eop_warning__6": |
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
+    - "cook_eop_warning__7": |
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
+    - "cook_eop_warning__8": |
+        % if filing_available:
+        ${ cook_instructions_warning }
+        % else:
+        ${ "" }
+        % endif
 ---
 attachment:
   variable name: op_next_steps[i]
