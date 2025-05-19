@@ -789,7 +789,7 @@ fields:
     datatype: yesnowide
   - We have or might have children together.: relationship_ac
     datatype: yesnowide
-  - We are related through a current or past marriage.: relationship_ma
+  - We are related through a current or past marriage, such as a spouse, in-law, or step-sibling.: relationship_ma
     help: |
       Select this if you are a spouse, ex-spouse, in-law, step-child, step-brother, step-sister, step-sibling, or other family member of the person who caused the abuse.
     datatype: yesnowide
@@ -815,7 +815,7 @@ fields:
     datatype: yesnowide
     help: |
       Example: We share a common area like a kitchen. This would not apply if you just had apartments in the same building.
-  - We are related through blood.: relationship_bl
+  - We are related through blood, such as a child, parent, or sibling.: relationship_bl
     datatype: yesnowide
     help: |
       Select this if you are a child, parent, brother, sister, sibling, grandchild, grandparent, or other family member of the person who caused the abuse.
@@ -6145,7 +6145,7 @@ attachment:
   name: emergency_op
   filename: emergency_op
   skip undefined: True
-  editable: False
+  editable: True
   pdf template file: emergency_op.pdf
   fields:
     - "county": ${ trial_court.address.county }
@@ -7000,7 +7000,7 @@ attachment:
   name: plenary_op
   filename: plenary_op
   skip undefined: True
-  editable: False
+  editable: True
   pdf template file: plenary_op.pdf
   fields:
     - "county": ${ trial_court.address.county }
