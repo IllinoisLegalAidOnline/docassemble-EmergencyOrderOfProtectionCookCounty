@@ -148,7 +148,7 @@ review:
       **People to protect with this Order of Protection:**
       
       % if protect_petitioner:
-      * You
+      * Me
       % endif
       % if protect_shared_kids:
       * Minor children you have with ${other_parties[0].name.full(middle="full")}
@@ -474,22 +474,6 @@ review:
   - note: |
       <h4>About your children (optional)</h4>
     show if: minor_kids_with_respondent  
-  - Edit: children_live_in_il
-    button: |
-      **Why are you asking the court to make decisions about your minor children?**
-      
-      % if children_live_in_il:
-      * The children have lived in Illinois for the past 6 months.
-      % endif
-      % if children_removed_from_il:
-      * I live in Illinois, but the children who lived in Illinois were taken out of state.
-      % endif
-      % if children_fled:
-      * The children are in Illinois because we fled to avoid abuse elsewhere.
-      % endif
-      % if no_children_decisions:
-      * I'm not asking the court to make decisions about the children.
-      % endif
   - Edit: primary_caretaker
     button: |
       **Primary caretaker of the children with ${ other_parties[0].name.full(middle="full") }:**
@@ -505,12 +489,29 @@ review:
       **${other_caretaker.name.full(middle="full")}'s address:**
       ${ other_caretaker.address.on_one_line(bare=True) }
     show if: primary_caretaker == "other"
+  - Edit: court_make_children_decisions
+    button: |
+      **Do you want the court to make decisions about the children?**
+      ${ word(yesno(court_make_children_decisions)) }    
+  - Edit: children_live_in_il
+    button: |
+      **Why are you asking the court to make decisions about your minor children?**
+      
+      % if children_live_in_il:
+      * The children have lived in Illinois for the past 6 months.
+      % endif
+      % if children_removed_from_il:
+      * I live in Illinois, but the children who lived in Illinois were taken out of state.
+      % endif
+      % if children_fled:
+      * The children are in Illinois because we fled to avoid abuse elsewhere.
+      % endif
+    show if: court_make_children_decisions
 
   - Edit: temp_custody_of_children
     button: |
       **Do you want the court to grant you temporary decisionmaking responsibility (custody) of the children you have with ${other_parties[0].name.full(middle="full")}?**
       ${ word(yesno(temp_custody_of_children)) }
-
 
   - Edit: physical_care_of_children
     button: |
@@ -569,6 +570,26 @@ review:
       % if appear_with_children_exam:
       * To permit a court-ordered interview or examination of the children or of ${other_parties[0].name.full(middle="full")}
       % endif
+    show if: return_children_to == "court"
+  - Edit: res_appear_alone
+    button: |
+      **Should ${other_parties[0].name.full(middle="full")} be ordered to come to court alone?**
+      ${ word(yesno(res_appear_alone))}
+    show if: return_children_to != "court"
+  - Edit: res_appear_alone
+    button: |
+      **Why should ${other_parties[0].name.full(middle="full")} be ordered to come to court alone?**
+      
+      % if appear_alone_prevent:
+      * To prevent abuse, neglect, removal, or concealment of the children
+      % endif
+      % if appear_alone_return:
+      * To return the children to me
+      % endif
+      % if appear_alone_exam:
+      * To permit a court-ordered interview or examination of the children or of ${other_parties[0].name.full(middle="full")}
+      % endif
+    show if: return_children_to != "court" and res_appear_alone      
   - Edit: no_records_no_contact
     button: |
       **${other_parties[0].name.full(middle="full")} should not have access to the children's records for the following reasons:**
@@ -1271,7 +1292,6 @@ review:
       % else:
       Not entered
       % endif
-
   - Edit: other_parties[0].skin
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s skin color?**
@@ -1284,22 +1304,28 @@ review:
   - Edit: other_parties[0].hair
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s hair color?**
+      % if other_parties[0].hair != "":
       ${ other_parties[0].hair }
-    show if: trial_court_index == -1 and other_parties[0].hair != ""
+      % else:
+      Not entered
+      % endif
   - Edit: other_parties[0].eyes
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s eye color?**
+      % if other_parties[0].eyes != "":
       ${ other_parties[0].eyes }
-    show if: trial_court_index == -1 and other_parties[0].eyes != ""
+      % else:
+      Not entered
+      % endif
+  - Edit: other_parties[0].tattoos
+    button: |
+      **Other things about ${other_parties[0].name.full(middle="full")}'s appearance:**
+      ${ other_parties[0].tattoos }
   - Edit: other_parties[0].glasses
     button: |
       **Does ${other_parties[0].name.full(middle="full")} wear glasses?**
       ${ other_parties[0].glasses }
     show if: trial_court_index == -1
-  - Edit: other_parties[0].tattoos
-    button: |
-      **Other things about ${other_parties[0].name.full(middle="full")}'s appearance:**
-      ${ other_parties[0].tattoos }
       
   - Edit: other_parties[0].alias_names
     button: |
@@ -1469,7 +1495,7 @@ review:
 
   - Edit: other_parties[0].work_hours
     button: |
-      **${other_parties[0].name.full(middle="full")}'s work hours:**
+      **${other_parties[0].name.full(middle="full")}'s work schedule:**
       % if knows_respondent_work and other_parties[0].work_hours != "":
       ${ other_parties[0].work_hours }
       % else:
@@ -2151,7 +2177,7 @@ review:
       **People to protect with this Order of Protection:**
       
       % if protect_petitioner:
-      * You
+      * Me
       % endif
       % if protect_shared_kids:
       * Minor children you have with ${other_parties[0].name.full(middle="full")}
@@ -2498,22 +2524,6 @@ question: |
 subquestion: |
   Edit your answers below.
 review: 
-  - Edit: children_live_in_il
-    button: |
-      **Why are you asking the court to make decisions about your minor children?**
-      
-      % if children_live_in_il:
-      * The children have lived in Illinois for the past 6 months.
-      % endif
-      % if children_removed_from_il:
-      * I live in Illinois, but the children who lived in Illinois were taken out of state.
-      % endif
-      % if children_fled:
-      * The children are in Illinois because we fled to avoid abuse elsewhere.
-      % endif
-      % if no_children_decisions:
-      * I'm not asking the court to make decisions about the children.
-      % endif
   - Edit: primary_caretaker
     button: |
       **Primary caretaker of the children with ${ other_parties[0].name.full(middle="full") }:**
@@ -2529,12 +2539,29 @@ review:
       **${other_caretaker.name.full(middle="full")}'s address:**
       ${ other_caretaker.address.on_one_line(bare=True) }
     show if: primary_caretaker == "other"
+  - Edit: court_make_children_decisions
+    button: |
+      **Do you want the court to make decisions about the children?**
+      ${ word(yesno(court_make_children_decisions)) }    
+  - Edit: children_live_in_il
+    button: |
+      **Why are you asking the court to make decisions about your minor children?**
+      
+      % if children_live_in_il:
+      * The children have lived in Illinois for the past 6 months.
+      % endif
+      % if children_removed_from_il:
+      * I live in Illinois, but the children who lived in Illinois were taken out of state.
+      % endif
+      % if children_fled:
+      * The children are in Illinois because we fled to avoid abuse elsewhere.
+      % endif
+    show if: court_make_children_decisions
 
   - Edit: temp_custody_of_children
     button: |
       **Do you want the court to grant you temporary decisionmaking responsibility (custody) of the children you have with ${other_parties[0].name.full(middle="full")}?**
       ${ word(yesno(temp_custody_of_children)) }
-
   - Edit: physical_care_of_children
     button: |
       **Do you want the court to give you possession of the children you have with ${ other_parties[0].name.full(middle="full") }?**
@@ -2547,10 +2574,7 @@ review:
     button: |
       **Do you want the court to order that ${other_parties[0].name.full(middle="full")} cannot remove the children from your care or from a school or daycare?**
       ${ word(yesno(no_removal_school)) }
-#- Edit: keep_schools_confidential
-#  button: |
-#    **Do you want the court to keep the school or daycare information confidential?**
-#    ${ word(yesno(keep_schools_confidential)) }
+
   - Edit: current_possession_of_children
     button: |
       **Do you currently have physical care and possession of your children with  ${other_parties[0].name.full(middle="full")}?**
@@ -2592,6 +2616,26 @@ review:
       % if appear_with_children_exam:
       * To permit a court-ordered interview or examination of the children or of ${other_parties[0].name.full(middle="full")}
       % endif
+    show if: return_children_to == "court"
+  - Edit: res_appear_alone
+    button: |
+      **Should ${other_parties[0].name.full(middle="full")} be ordered to come to court alone?**
+      ${ word(yesno(res_appear_alone))}
+    show if: return_children_to != "court"
+  - Edit: res_appear_alone
+    button: |
+      **Why should ${other_parties[0].name.full(middle="full")} be ordered to come to court alone?**
+      
+      % if appear_alone_prevent:
+      * To prevent abuse, neglect, removal, or concealment of the children
+      % endif
+      % if appear_alone_return:
+      * To return the children to me
+      % endif
+      % if appear_alone_exam:
+      * To permit a court-ordered interview or examination of the children or of ${other_parties[0].name.full(middle="full")}
+      % endif
+    show if: return_children_to != "court" and res_appear_alone
   - Edit: no_records_no_contact
     button: |
       **${other_parties[0].name.full(middle="full")} should not have access to the children's records for the following reasons:**
@@ -3310,7 +3354,6 @@ review:
       % else:
       Not entered
       % endif
-
   - Edit: other_parties[0].skin
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s skin color?**
@@ -3323,22 +3366,28 @@ review:
   - Edit: other_parties[0].hair
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s hair color?**
+      % if other_parties[0].hair != "":
       ${ other_parties[0].hair }
-    show if: trial_court_index == -1 and other_parties[0].hair != ""
+      % else:
+      Not entered
+      % endif
   - Edit: other_parties[0].eyes
     button: |
       **What is ${other_parties[0].name.full(middle="full")}'s eye color?**
+      % if other_parties[0].eyes != "":
       ${ other_parties[0].eyes }
-    show if: trial_court_index == -1 and other_parties[0].eyes != ""
+      % else:
+      Not entered
+      % endif
+  - Edit: other_parties[0].tattoos
+    button: |
+      **Other things about ${other_parties[0].name.full(middle="full")}'s appearance:**
+      ${ other_parties[0].tattoos }
   - Edit: other_parties[0].glasses
     button: |
       **Does ${other_parties[0].name.full(middle="full")} wear glasses?**
       ${ other_parties[0].glasses }
     show if: trial_court_index == -1
-  - Edit: other_parties[0].tattoos
-    button: |
-      **Other things about ${other_parties[0].name.full(middle="full")}'s appearance:**
-      ${ other_parties[0].tattoos }
       
   - Edit: other_parties[0].alias_names
     button: |
@@ -3508,7 +3557,7 @@ review:
 
   - Edit: other_parties[0].work_hours
     button: |
-      **${other_parties[0].name.full(middle="full")}'s work hours:**
+      **${other_parties[0].name.full(middle="full")}'s work schedule:**
       % if knows_respondent_work and other_parties[0].work_hours != "":
       ${ other_parties[0].work_hours }
       % else:
