@@ -1076,7 +1076,7 @@ id: any other children with respondent
 question: |
   Do you have another minor child with ${other_parties[0].name.full(middle="full")}?
 subquestion: |
-  The statewide Order of Protection forms have space for up to 4 minor children with the Respondent.
+  The statewide Order of Protection forms have space for up to 6 minor children with the Respondent.
   % if len(shared_kids.elements) >= 1:  
   So far you have told us about ${comma_and_list(shared_kids.complete_elements().full_names())}.
   % endif
@@ -8163,3 +8163,69 @@ attachment:
   pdf template file: sheriff_cover_sheet.pdf
   fields:
     - "fake": ${ "" }
+
+---
+attachment:
+  variable name: op_warrant_info_sheet[i]
+  name: op_warrant_info_sheet
+  filename: warrant_info_sheet
+  skip undefined: True
+  editable: False
+  pdf template file: op_warrant_info_sheet.pdf
+  fields:
+    - "county": ${ trial_court.address.county }
+    - "petitioner": ${ users[0].name.full(middle="full") }
+    - "obo_minor_cb": ${ True if protect_obo_minor else '' }
+    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "case_number__1": ${ case_number }
+    - "petitioner_notice_phone": ${ phone_number_formatted(users[0].phone_number) }
+    - "petitioner_notice_email": ${ users[0].email if users[0].email_notice else "" }
+    - "respondent_dob": |
+        % if knows_respondent_dob == 'exact' and other_parties[0].birthdate != "":
+        ${ other_parties[0].birthdate }
+        % elif knows_respondent_dob == 'some':
+        ${ "about " + other_parties[0].approx_age }
+        % else:
+        ${ "do not know" }
+        % endif
+    - "respondent_gender": ${ respondent_gender_other if other_parties[0].gender == 'other' else other_parties[0].gender }
+    - "respondent_race": ${ respondent_race_other if other_parties[0].race == 'other' else other_parties[0].race }
+    - "respondent_height": |
+        % if other_parties[0].height_feet > 1:
+        ${ str(other_parties[0].height_feet) + "\'" }
+        % if other_parties[0].height_inches > 0:
+        ${ str(other_parties[0].height_inches) + "\""}
+        % endif
+        % else:
+        ${""}
+        % endif
+    - "respondent_weight": ${ str(other_parties[0].weight) + " lbs." if other_parties[0].weight > 0 else '' }
+    - "respondent_hair": ${ other_parties[0].hair if other_parties[0].hair != "" else '' }
+    - "respondent_eyes": ${ other_parties[0].eyes if other_parties[0].eyes != "" else '' }
+    - "respondent_tattoos": ${ other_parties[0].tattoos if other_parties[0].tattoos != "" else '' }
+    - "respondent_warrant_help": ${ respondent_warrant_help if has_helpful_warrant_info else '' }
+    - "warrant_location_1": ${ warrant_location_list[0].on_one_line(bare=True) + ", " + warrant_location_list[0].description }
+    - "warrant_location_1_days_times": ${ warrant_location_list[0].days_times }
+    - "warrant_location_1_others_yes": ${ warrant_location_list[0].others_present  }
+    - "warrant_location_1_others_no": ${ not warrant_location_list[0].others_present  }
+    - "warrant_location_1_others_info": ${ warrant_location_list[0].others_present_details if warrant_location_list[0].others_present else '' }
+    - "warrant_location_2": ${ warrant_location_list[1].on_one_line(bare=True) + ", " + warrant_location_list[1].description if warrant_location_list.number() > 1 else "" }
+    - "warrant_location_2_days_times": ${ warrant_location_list[1].days_times if warrant_location_list.number() > 1 else "" }
+    - "warrant_location_2_others_yes": ${ warrant_location_list[1].others_present if warrant_location_list.number() > 1 else "" }
+    - "warrant_location_2_others_no": ${ not warrant_location_list[1].others_present if warrant_location_list.number() > 1 else "" }
+    - "warrant_location_2_others_info": ${ warrant_location_list[1].others_present_details if warrant_location_list.number() > 1 and warrant_location_list[1].others_present else '' }
+
+---
+attachment:
+  variable name: op_warrant[i]
+  name: op_warrant
+  filename: search_warrant
+  skip undefined: True
+  editable: False
+  pdf template file: op_warrant.pdf
+  fields:
+    - "county": ${ trial_court.address.county }
+    - "petitioner": ${ users[0].name.full(middle="full") }
+    - "obo_minor_cb": ${ True if protect_obo_minor else '' }
+    - "respondent": ${other_parties[0].name.full(middle="full")}
+    - "case_number__1": ${ case_number }      
