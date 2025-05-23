@@ -1103,6 +1103,7 @@ review:
       % if firearms_relief['warrant']:
       * I want a **search warrant** to be issued so law enforcement can search ${other_parties[0].name.full(middle="full")}'s property and seize fierarms.
       % endif
+    show if: firearms_threat
   - Edit: intimate_partner
     button: |
       **Is ${other_parties[0].name.full(middle="full")} a current or former intimate partner?**
@@ -1113,7 +1114,7 @@ review:
       % else:
       Does not apply
       % endif
-    show if: firearms_relief['surrender']
+    show if: firearms_threat and firearms_relief['surrender']
   - Edit: warrant_reasons
     button: |
       **Why do you want the court to order a search warrant?**
@@ -1127,10 +1128,7 @@ review:
       % if warrant_reasons['location']:
       * The firearm or firearm parts are in the residence, vehicle, or other property of ${other_parties[0].name.full(middle="full")}.
       % endif
-      % if warrant_reasons['report']:
-      * I made a report of domestic violence to law enforcement within the last 90 days.
-      % endif
-    show if: firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['warrant']
   - Edit: warrant_location_list.revisit
     button: |
       **Locations you want to include in a search warrant:**
@@ -1138,23 +1136,27 @@ review:
       % for my_var in warrant_location_list:
         * ${ my_var.on_one_line(bare=True) }
       % endfor
-    show if: firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['warrant']
   - Edit: has_helpful_warrant_info
     button: |
       **Do you have other information about ${other_parties[0].name.full(middle="full")} that could help law enforcement with the warrant?**
       ${ word(yesno(has_helpful_warrant_info))}      
-    show if: firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['warrant']
   - Edit: has_helpful_warrant_info
     button: |
       **Other information that could help law enforcement with the warrant:**
       ${ respondent_warrant_help }      
-    show if: firearms_relief['warrant'] and has_helpful_warrant_info
-    
+    show if: firearms_threat and firearms_relief['warrant'] and has_helpful_warrant_info
+  - Edit: made_dv_report
+    button: |
+      **Have you made a report of domestic violence to law enforcement within the last 90 days?**
+      ${ word(yesno(made_dv_report))}
+    show if: firearms_threat
   - Edit: firearms_eop_notice
     button: |
       **Are you worried that ${other_parties[0].name.full(middle="full")} might hurt you or the people you want to protect when they learn about the Order of Protection?**
       ${ word(yesno(firearms_eop_notice))}
-    show if: firearms_relief['surrender'] or firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['surrender'] or firearms_relief['warrant']
     
   - Edit: misc_remedies_text
     button: |
@@ -3161,6 +3163,7 @@ review:
       % if firearms_relief['warrant']:
       * I want a **search warrant** to be issued so law enforcement can search ${other_parties[0].name.full(middle="full")}'s property and seize fierarms.
       % endif
+    show if: firearms_threat
   - Edit: intimate_partner
     button: |
       **Is ${other_parties[0].name.full(middle="full")} a current or former intimate partner?**
@@ -3171,7 +3174,7 @@ review:
       % else:
       Does not apply
       % endif
-    show if: firearms_relief['surrender']
+    show if: firearms_threat and firearms_relief['surrender']
   - Edit: warrant_reasons
     button: |
       **Why do you want the court to order a search warrant?**
@@ -3185,10 +3188,7 @@ review:
       % if warrant_reasons['location']:
       * The firearm or firearm parts are in the residence, vehicle, or other property of ${other_parties[0].name.full(middle="full")}.
       % endif
-      % if warrant_reasons['report']:
-      * I made a report of domestic violence to law enforcement within the last 90 days.
-      % endif
-    show if: firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['warrant']
   - Edit: warrant_location_list.revisit
     button: |
       **Locations you want to include in a search warrant:**
@@ -3196,22 +3196,27 @@ review:
       % for my_var in warrant_location_list:
         * ${ my_var.on_one_line(bare=True) }
       % endfor
-    show if: firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['warrant']
   - Edit: has_helpful_warrant_info
     button: |
       **Do you have other information about ${other_parties[0].name.full(middle="full")} that could help law enforcement with the warrant?**
       ${ word(yesno(has_helpful_warrant_info))}      
-    show if: firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['warrant']
   - Edit: has_helpful_warrant_info
     button: |
       **Other information that could help law enforcement with the warrant:**
       ${ respondent_warrant_help }      
-    show if: firearms_relief['warrant'] and has_helpful_warrant_info
+    show if: firearms_threat and firearms_relief['warrant'] and has_helpful_warrant_info
+  - Edit: made_dv_report
+    button: |
+      **Have you made a report of domestic violence to law enforcement within the last 90 days?**
+      ${ word(yesno(made_dv_report))}
+    show if: firearms_threat
   - Edit: firearms_eop_notice
     button: |
       **Are you worried that ${other_parties[0].name.full(middle="full")} might hurt you or the people you want to protect when they learn about the Order of Protection?**
       ${ word(yesno(firearms_eop_notice))}
-    show if: firearms_relief['surrender'] or firearms_relief['warrant']
+    show if: firearms_threat and firearms_relief['surrender'] or firearms_relief['warrant']
   
   - Edit: misc_remedies_text
     button: |

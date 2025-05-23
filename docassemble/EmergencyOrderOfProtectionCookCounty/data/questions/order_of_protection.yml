@@ -308,6 +308,7 @@ code: |
       warrant_reasons
       warrant_location_list.gather()
       has_helpful_warrant_info
+      made_dv_report
     if firearms_relief['surrender'] or firearms_relief['warrant']:
       firearms_eop_notice
   misc_remedies_text
@@ -3499,7 +3500,6 @@ content: |
   * They have threatened to commit suicide.
   * They try to control most or all of your daily activities.
   * They monitor your phone, computer, or social media use.
-
 ---
 id: remove firearms
 question: |
@@ -3508,7 +3508,7 @@ subquestion: |
   As part of an Order of Protection, the court can:
   
   * Order ${other_parties[0].name.full(middle="full")} to **surrender firearms** to law enforcement, and
-  * Issue a **Search warrant** be issued so law enforcement can search ${other_parties[0].name.full(middle="full")}'s property to seize firearms.
+  * Issue a **search warrant** be issued so law enforcement can search ${other_parties[0].name.full(middle="full")}'s property to seize firearms.
   
   Firearms can include:
   
@@ -3517,13 +3517,14 @@ subquestion: |
   * A Firearm Identification Owner (FOID) card, and
   * A Concealed Carry License.
 
+  ${ collapse_template(firearms_help) }
+  
   % if minor_kids_with_respondent or protect_petitioner_kids:
   Reminder: If ${other_parties[0].name.full(middle="full")} threatened you or your children with a weapon, be sure to explain the threat and the weapon in the [**What happened**](${ url_action('section_incidents') }) section.
   % else:
   Reminder: If ${other_parties[0].name.full(middle="full")} threatened you with a weapon, be sure to explain the threat and the weapon in the [**What happened**](${ url_action('section_incidents') }) section.
   % endif
 
-  **Note:** Pages 4 and 5 of the instructions you get at the end of the program include important information about firearms.
 fields:
   - Do you want the court to order any firearms relief? (Check all that apply.): firearms_relief
     datatype: checkboxes
@@ -3531,6 +3532,19 @@ fields:
       - Yes, I want ${other_parties[0].name.full(middle="full")} to **surrender firearms** to law enforcement.: surrender
       - Yes, I want a **search warrant** to be issued so law enforcement can search ${other_parties[0].name.full(middle="full")}'s property and seize fierarms.: warrant
     none of the above: No, I do not want to ask for either of these.
+---
+template: firearms_help
+subject: |
+  **Learn more about firearms**
+content: |  
+  There is a lot to think about when considering what you want the court to do about firearms.
+
+  * If you ask for a search warrant, this will involve additional contact with law enforcement.
+  * The search warrant process is different in every county. Local courts and law enforcement may have their own process and forms to get firearms relief.
+
+  You can read these [**important information pages**](${ url_of('op_firearms_info.pdf') }) to get some guidance, but it can be helpful to talk with a domestic violence advocate when deciding what to do. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+
+  The information pages are also included in the instructions you can download at the end of this program.
 ---
 id: intimate partner
 question: |
@@ -3559,7 +3573,19 @@ fields:
       - ${other_parties[0].name.full(middle="full")} is an immediate threat to the physical safety of the people I want to protect.: threat
       - ${other_parties[0].name.full(middle="full")} has a firearm or firearm parts that could be used to make a firearm.: has_guns
       - The firearm or firearm parts are in the residence, vehicle, or other property of ${other_parties[0].name.full(middle="full")}.: location
-      - I made a report of domestic violence to law enforcement within the last 90 days.: report
+---
+id: report of dv
+question: |
+  Have you made a report of domestic violence to law enforcement within the last 90 days?
+subquestion: |
+  This is not required to get a search warrant for firearms.
+  
+  Law enforcement will use this to determine how much time they have to execute the warrant.
+fields:
+  - no label: made_dv_report
+    datatype: yesnoradio
+
+
 ---
 id: warrant location details
 question: |
@@ -3575,10 +3601,8 @@ fields:
       states_list()
     default: IL      
   - ZIP code: warrant_location_list[i].zip
-  - Description of location: warrant_location_list[i].description
+  - Description of location, including building type, fences, entrances, etc., if known: warrant_location_list[i].description
     maxlength: 40
-    help: |
-  	  Include the building type, fences, entrances, etc., if you know them.
   - Days and times ${other_parties[0].name.full(middle="full")} will likely be at this location: warrant_location_list[i].days_times
     maxlength: 40
   - Is anyone else likely to be at this location?: warrant_location_list[i].others_present
@@ -3615,6 +3639,15 @@ code: |
 id: other helpful warrant info
 question: |
   Do you have other information about ${other_parties[0].name.full(middle="full")} that might be helpful to law enforcement when they execute the warrant?
+subquestion: |
+  Law enforcement might want to know details about ${other_parties[0].name.full(middle="full")}'s appearance like their skin color or if they wear glasses.
+  
+  They also might want to know if ${other_parties[0].name.full(middle="full")}:
+  
+  * Has a history of mental illness,
+  * Has ever been suicidal, 
+  * Is likely to be under the influence of alcohol or drugs, or
+  * Is on court-ordered probation.
 fields:
   - no label: has_helpful_warrant_info
     datatype: yesnoradio
@@ -5729,8 +5762,8 @@ attachment:
     - "firearms_threat": ${ True if firearms_threat == True and warrant_reasons['threat'] == True else '' }
     - "firearms_has_guns": ${ True if firearms_threat == True and warrant_reasons['has_guns'] == True else '' }
     - "firearms_location": ${ True if firearms_threat == True and warrant_reasons['location'] == True else '' }
-    - "firearms_report": ${ True if firearms_threat == True and warrant_reasons['report'] == True else '' }
-    - "firearms_eop_notice": ${ True if eop == True and firearms_eop_notice == True else '' }
+    - "firearms_report": ${ True if firearms_threat == True and made_dv_report == True else '' }
+    - "firearms_eop_notice": ${ True if firearms_threat == True and eop == True and firearms_eop_notice == True else '' }
 
       # page 13    
     - "childrens_records_cb": ${ True if minor_kids_with_respondent and ( no_records_no_contact or no_records_hide_address or no_records_no_removal ) else "" }
@@ -8228,4 +8261,4 @@ attachment:
     - "petitioner": ${ users[0].name.full(middle="full") }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "respondent": ${other_parties[0].name.full(middle="full")}
-    - "case_number__1": ${ case_number }      
+    - "case_number__1": ${ case_number }
