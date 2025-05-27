@@ -1334,7 +1334,7 @@ review:
   - Edit: other_parties[0].glasses
     button: |
       **Does ${other_parties[0].name.full(middle="full")} wear glasses?**
-      % if other_parties[0].glasses is None:
+      % if other_parties[0].glasses is not None:
       ${ other_parties[0].glasses }
       % else:
       Not entered
@@ -3419,7 +3419,7 @@ review:
   - Edit: other_parties[0].glasses
     button: |
       **Does ${other_parties[0].name.full(middle="full")} wear glasses?**
-      % if other_parties[0].glasses is None:
+      % if other_parties[0].glasses is not None:
       ${ other_parties[0].glasses }
       % else:
       Not entered
