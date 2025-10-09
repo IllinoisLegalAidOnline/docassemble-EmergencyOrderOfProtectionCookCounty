@@ -600,7 +600,7 @@ subquestion: |
   * A safe email address where the court coordinator can contact you, and
   * A phone or computer where you can use Zoom for a remote video court hearing. [**Download the Zoom app**](https://zoom.us/download) before your after-hours court hearing.
 
-  Set aside 15 to 30 minutes to finish this program. You can login and save your work to return to later. 
+  Set aside 15 to 30 minutes to finish this program. You can login and save your work to continue later. 
  
   ${ collapse_template(help_example) }  
 
@@ -1526,6 +1526,9 @@ fields:
     maxlength: 800
     help: |
       The petition has space for about 800 characters including spaces for each incident.
+      The petition has space for about **800 characters** including spaces for each incident.
+  - note:  |
+      **Note:** The petition has space for about **800 characters** including spaces for each incident.
 ---
 id: first incident detail
 question: |
@@ -1559,6 +1562,8 @@ fields:
     maxlength: 800
     help: |
       The petition has space for about 800 characters including spaces for each incident.
+  - note:  |
+      **Note:** The petition has space for about **800 characters** including spaces for each incident.
 ---
 template: incidents_help
 subject: |
@@ -1825,6 +1830,11 @@ fields:
     maxlength: 180
     help: |
       Enter as much information as you can including app, website, and username if you know it.
+    show if:
+      variable: respondent_on_social_media
+      is: 'Yes'
+  - note:  |
+      **Note:** The form has space for about **180 characters** including spaces.
     show if:
       variable: respondent_on_social_media
       is: 'Yes'
@@ -2141,9 +2151,13 @@ subquestion: |
   % if other_location_1_is_school:
   So far you entered: ${ schools[2].name }
   % else:
+  % if hide_other_address_1:
+  So far you entered: ${ other_locations_hidden_description_1 }
+  % else:  
   So far you entered: ${ other_locations[0].name }
   % endif
-
+  % endif
+  
   The statewide Order of Protection forms have space for up to 2 other places in total.  
 fields:
   - no label: stay_away_other_2
@@ -2179,7 +2193,11 @@ fields:
     show if: 
       variable: same_school_restrictions
       is: "not present in parts"
-      
+  - note:  |
+      **Note:** The form has space for about **150 characters** including spaces.
+    show if: 
+      variable: same_school_restrictions
+      is: "not present in parts"  
 ---
 id: same school name
 question: |
@@ -2214,7 +2232,8 @@ fields:
     input type: area
     rows: 6
     maxlength: 200
-
+  - note:  |
+      **Note:** The form has space for about **200 characters** including spaces.
 ---
 id: request counseling for respondent
 question: |
@@ -2691,6 +2710,8 @@ fields:
     maxlength: 270
     help: |
       For example: New Years Day 10:00 AM to 3:00 PM, Fourth of July noon - 5:00PM, and Thanksgiving 9AM-4PM
+  - note:  |
+      **Note:** The form has space for about **270 characters** including spaces.
 ---
 id: parenting time start date
 question: |
@@ -3042,6 +3063,11 @@ fields:
     show if:
       variable: respo_property['other']
       is: True
+  - note:  |
+      **Note:** The form has space for about **200 characters** including spaces.
+    show if:
+      variable: respo_property['other']
+      is: True
 ---
 id: respondent one time right to enter
 question: |
@@ -3350,6 +3376,9 @@ fields:
     rows: 6
     maxlength: 200
     show if: restrict_other_property
+  - note:  |
+      **Note:** The form has space for about **200 characters** including spaces.
+    show if: restrict_other_property
 ---
 id: why property should be restricted
 question: |
@@ -3358,7 +3387,7 @@ subquestion: |
   You said this property should be protected:
 
   % if restrict_cars:
-  * ${ restricted_car_details }
+  * ${ restricted_car_details.replace("\n", " ").replace("\r", " ") }
   % endif
   % if restrict_home:
   * ${ restricted_property_address.on_one_line(bare=True) } 
@@ -3370,7 +3399,7 @@ subquestion: |
   % endif
   % endif
   % if restrict_other_property:
-  * ${ restricted_property }
+  * ${ restricted_property.replace("\n", " ").replace("\r", " ") }
   % endif
 fields:
   - no label: restrict_property_reason
@@ -3643,7 +3672,7 @@ fields:
     maxlength: 75
     help: |
       Include the names and ages of people, and the days and times they are likely to be there.
-    show if: warrant_location_list[i].others_present  
+    show if: warrant_location_list[i].others_present
 ---
 id: more warrant locations
 question: |
@@ -3654,7 +3683,7 @@ subquestion: |
   So far you told us about: 
   
   * Address: ${ warrant_location_list[0].on_one_line(bare=True) }
-  * Description: ${ warrant_location_list[0].description }
+  * Description: ${ warrant_location_list[0].description.replace("\n", " ").replace("\r", " ") }
 field: warrant_location_list.there_is_another
 choices:
   - Yes: True
@@ -3687,6 +3716,9 @@ fields:
     input type: area
     rows: 3
     maxlength: 120
+    show if: has_helpful_warrant_info
+  - note:  |
+      **Note:** The form has space for about **120 characters** including spaces.
     show if: has_helpful_warrant_info
 ---
 id: firearms eop prior notice question
@@ -3722,17 +3754,21 @@ fields:
     required: False
     default: |
       ${ no_contact_text }
+  - note:  |
+      **Note:** The form has space for about **415 characters** including spaces.
   - Because:: misc_remedies_because_text
     input type: area
     rows: 5
     maxlength: 375
     required: False
+  - note:  |
+      **Note:** The form has space for about **375 characters** including spaces.    
 ---
 id: e-signature
 question: |
   Do you want to add your e-signature to your Petition for Order of Protection?
 subquestion: |
-  This program can put "**/s/ ${users[0].name.full(middle='full')}**" where you would sign your name. The court will accept this as your signature.
+  This program can put "**/s/ ${ users[0].name_full() }**" where you would sign your name. The court will accept this as your signature.
 
   If you do not add your **{e-signature}**, you must sign your paper forms before you file them.
 
@@ -3988,6 +4024,8 @@ fields:
     required: False
     help: |
       Include as much information as possible, such as best hours to serve, type of building, etc.
+  - note:  |
+      **Note:** The form has space for about **400 characters** including spaces.
 ---
 id: respondent gender cook only
 question: |
@@ -4126,6 +4164,8 @@ fields:
     required: False
     help: |
       Try to be descritive. Examples: tattoos on hands, facial scars, birthmarks, mustache, beard
+  - note:  |
+      **Note:** The form has space for about **120 characters** including spaces.
   - Does ${other_parties[0].name.full()} wear glasses?: other_parties[0].glasses
     datatype: radio
     required: False
@@ -4186,6 +4226,10 @@ fields:
     input type: area
     rows: 5
     maxlength: 180
+    js show if: |
+      val("caution_reasons['armed']") == true || val("caution_reasons['home']") == true
+  - note:  |
+      **Note:** The form has space for about **180 characters** including spaces.
     js show if: |
       val("caution_reasons['armed']") == true || val("caution_reasons['home']") == true
 ---
@@ -6334,7 +6378,7 @@ attachment:
     - "respondent_weight": ${ str(other_parties[0].weight) + " lbs." if other_parties[0].weight > 0 else '' }
     - "respondent_hair": ${ other_parties[0].hair if other_parties[0].hair != "" else '' }
     - "respondent_eyes": ${ other_parties[0].eyes if other_parties[0].eyes != "" else '' }
-    - "respondent_tattoos": ${ other_parties[0].tattoos if other_parties[0].tattoos != "" else '' }
+    - "respondent_tattoos": ${ other_parties[0].tattoos.replace("\n", " ").replace("\r", " ") if other_parties[0].tattoos != "" else '' }
 
       # page 3
     
@@ -7208,7 +7252,7 @@ attachment:
     - "respondent_weight": ${ str(other_parties[0].weight) + " lbs." if other_parties[0].weight > 0 else '' }
     - "respondent_hair": ${ other_parties[0].hair if other_parties[0].hair != "" else '' }
     - "respondent_eyes": ${ other_parties[0].eyes if other_parties[0].eyes != "" else '' }
-    - "respondent_tattoos": ${ other_parties[0].tattoos if other_parties[0].tattoos != "" else '' }
+    - "respondent_tattoos": ${ other_parties[0].tattoos.replace("\n", " ").replace("\r", " ") if other_parties[0].tattoos != "" else '' }
       
       # page 3    
     - "no_abuse": ${ any((no_harassment, no_physical, no_stalking, no_willful, no_intimidation, no_exploitation, no_neglect, no_interference)) }
@@ -8166,7 +8210,7 @@ attachment:
     - "respondent_hair": ${ other_parties[0].hair if other_parties[0].hair != "" else '' }
     - "respondent_eyes": ${ other_parties[0].eyes if other_parties[0].eyes != "" else '' }
     - "respondent_glasses": ${other_parties[0].glasses if other_parties[0].glasses != "" else ''}
-    - "respondent_tattoos": ${ other_parties[0].tattoos if other_parties[0].tattoos != "" else '' }
+    - "respondent_tattoos": ${ other_parties[0].tattoos.replace("\n", " ").replace("\r", " ") if other_parties[0].tattoos != "" else '' }
     - "respondent_history_illness": ${ True if caution_reasons['illness'] == True else "" }
     - "respondent_alcohol": ${ True if caution_reasons['alcohol'] == True else "" }
     - "respondent_drugs": ${ True if caution_reasons['drugs'] == True else "" }
