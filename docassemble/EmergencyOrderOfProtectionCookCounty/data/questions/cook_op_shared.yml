@@ -229,7 +229,7 @@ fields:
     datatype: yesnowide
   - We have or might have children together.: relationship_ac
     datatype: yesnowide
-  - We are related through a current or past marriage, such as a spouse, in-law, or step-sibling. **Click to see options.**: relationship_ma
+  - "We are related through a current or past marriage, such as a spouse, in-law, or step-sibling. **Click :circle-question: to learn more.**": relationship_ma
     help: |
       Select this if you are a spouse, ex-spouse, in-law, step-child, step-brother, step-sister, step-sibling, or other family member of the person who caused the abuse.
     datatype: yesnowide
@@ -251,11 +251,11 @@ fields:
   - They are another family member.: relationship_ofm
     datatype: yesno
     show if: relationship_ma
-  - We share or shared a living space.: relationship_cs
+  - "We share or shared a living space. **Click :circle-question: to learn more.**": relationship_cs
     datatype: yesnowide
     help: |
       Example: We share a common area like a kitchen. This would not apply if you just had apartments in the same building.
-  - We are related through blood, such as a child, parent, or sibling. **Click to see options.**: relationship_bl
+  - "We are related through blood, such as a child, parent, or sibling. **Click :circle-question: to learn more.**": relationship_bl
     datatype: yesnowide
     help: |
       Select this if you are a child, parent, brother, sister, sibling, grandchild, grandparent, or other family member of the person who caused the abuse.
@@ -279,13 +279,15 @@ fields:
     help: |
       Examples: Uncle, aunt, or cousin.
     show if: relationship_bl
-  - We have a blood relationship through a child.: relationship_bk
+  - "We have a blood relationship through a child. **Click :circle-question: to learn more.**": relationship_bk
     datatype: yesnowide
-  - The abuser is a family or household member of my adopted, prospective adopted, or foster child.: relationship_a
+    help: |
+      A **blood relationship through a child** means two people are biologically related to each other because they both share a blood connection with the same child.[NEWLINE][NEWLINE]The child is the bridge that creates a family connection between people who otherwise wouldn't be blood relatives.[NEWLINE][NEWLINE]An example would be grandparents on different sides - your mother and your father's mother don't share blood with each other directly, but they're both blood-related to you, their grandchild.
+  - "The abuser is a family or household member of my adopted, prospective adopted, or foster child.": relationship_a
     datatype: yesnowide
   - The abuser is a family or household member of a child that I am the legally-appointed guardian or custodian of.: relationship_l
     datatype: yesnowide
-  - The abuser is my personal caregiver, and I am a high-risk adult with disabilities or otherwise need care.: relationship_pc
+  - "The abuser is my personal caregiver, and I am a high-risk adult with disabilities or otherwise need care. **Click :circle-question: to learn more.**": relationship_pc
     datatype: yesnowide
     help: |
       A **high risk adult with disabilities** is a person aged 18 or over whose physical or mental disability keeps them from protecting themself from abuse, neglect, or exploitation.
@@ -3209,7 +3211,7 @@ subquestion: |
       <li>Everything on the forms is true and correct, or you have been informed or you believe it is true and correct, and</li>
       <li>You understand that making a false statement on the form is perjury and has penalties provided by law.</li>
     </ul></p>
-  <p>See the <a href="https://www.ilga.gov/legislation/ilcs/documents/073500050k1-109.htm"><b>Code of Civil Procedure, 735 ILCS 5/1-109</b></a> for more information.</p>
+  <p>See the <a href="https://www.ilga.gov/legislation/ilcs/documents/073500050k1-109.htm"><b>Illinois Code of Civil Procedure, 735 ILCS 5/1-109</b></a> for more information.</p>
   </div>
 
   **Note:** If you are going to email your forms to the after-hours court clerk, select **Yes**.
@@ -3232,7 +3234,7 @@ content: |
   * Everything on the form is true and correct, and
   * You understand that making a false statement on the form is perjury, which can result in criminal penalties.
   
-  See the [**Code of Civil Procedure, 735 ILCS 5/1-109**](https://www.ilga.gov/legislation/ilcs/documents/073500050k1-109.htm), for more information.
+  See the [**Illinois Code of Civil Procedure, 735 ILCS 5/1-109**](https://www.ilga.gov/legislation/ilcs/documents/073500050k1-109.htm), for more information.
 ---
 id: phone number
 question: |

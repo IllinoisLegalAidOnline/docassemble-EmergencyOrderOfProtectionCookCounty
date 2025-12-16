@@ -560,14 +560,9 @@ subquestion: |
   * Safety planning, and
   * Connection to advocates and attorneys.
 ---
-# removed after relationship answers reworded
-template: relationship_example
-subject: |
-  **Can I see some examples?**
-content: |  
-  If you want an Order of Protection against your mother, select **Child** because you are the child of that person.
-  
-  If you want an Order of Protection against the father of your foster child, select **Family or household member of my foster child**.
+
+
+
 ---
 #if filing_available:
 id: get docs screen
