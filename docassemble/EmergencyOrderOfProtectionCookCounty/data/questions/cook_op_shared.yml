@@ -258,7 +258,7 @@ fields:
   - "We are related through blood, such as a child, parent, or sibling. **Click :circle-question: to learn more.**": relationship_bl
     datatype: yesnowide
     help: |
-      Select this if you are a child, parent, brother, sister, sibling, grandchild, grandparent, or other family member of the person who caused the abuse.
+      Select this if you are a child, parent, brother, sister, sibling, grandchild, grandparent, or other family member like an uncle, aunt, or cousin of the person who caused the abuse.
   - I am their child.: relationship_ch
     datatype: yesno
     show if: relationship_bl
@@ -274,15 +274,13 @@ fields:
   - I am their grandparent.: relationship_gp
     datatype: yesno
     show if: relationship_bl
-  - They are another family member.: relationship_ofb
+  - They are another family member, like an uncle, aunt, or cousin.: relationship_ofb
     datatype: yesno
-    help: |
-      Examples: Uncle, aunt, or cousin.
     show if: relationship_bl
   - "We have a blood relationship through a child. **Click :circle-question: to learn more.**": relationship_bk
     datatype: yesnowide
     help: |
-      A **blood relationship through a child** means two people are biologically related to each other because they both share a blood connection with the same child.[NEWLINE][NEWLINE]The child is the bridge that creates a family connection between people who otherwise wouldn't be blood relatives.[NEWLINE][NEWLINE]An example would be grandparents on different sides - your mother and your father's mother don't share blood with each other directly, but they're both blood-related to you, their grandchild.
+      A **blood relationship through a child** means two people are biologically related to each other because they both share a blood connection with the same child.[NEWLINE][NEWLINE]The child is the bridge that creates a family connection between people who otherwise wouldn't be blood relatives.[NEWLINE][NEWLINE]For example: your sister had a child with the abuser. Your niece/nephew is the child that creates a blood-relationship between you and the abuser (the father of that child).[NEWLINE][NEWLINE]Another example: Grandparents on different sides - your mother's mother and your father's mother don't share blood with each other directly, but they're both blood-related to you, their grandchild.
   - "The abuser is a family or household member of my adopted, prospective adopted, or foster child.": relationship_a
     datatype: yesnowide
   - The abuser is a family or household member of a child that I am the legally-appointed guardian or custodian of.: relationship_l
