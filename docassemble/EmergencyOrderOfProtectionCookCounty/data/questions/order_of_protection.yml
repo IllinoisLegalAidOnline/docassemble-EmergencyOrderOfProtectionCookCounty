@@ -108,6 +108,8 @@ mandatory: True
 code: |
   nav.set_section('section_intro')
   sees_nav_bar
+  time_check
+  test_screen
   snapshot_start
   instructions
   cook_after_hours
@@ -436,6 +438,14 @@ code: |
     filing_available = False  
 ---
 # testing only
+id: get time
+question: |
+  When do you want to test AH availability?
+fields:
+  - Date and time: time_check
+    datatype: datetime
+---
+# testing only
 id: test screen
 continue button field: test_screen
 question: |
@@ -448,6 +458,23 @@ subquestion: |
   AH closed: ${ format_datetime(new_ah_close, format='EEEE, MMMM d, yyyy, h:mm a') }
   [NEWLINE]
   OK to email to clerk? ${ filing_available }
+
+  TEST time: ${ format_datetime(time_check, format='EEEE, MMMM d, yyyy, h:mm a') }
+  [NEWLINE]
+  TEST AH open: ${ format_datetime(test_ah_open, format='EEEE, MMMM d, yyyy, h:mm a') }
+  [NEWLINE]
+  TEST AH closed: ${ format_datetime(test_ah_close, format='EEEE, MMMM d, yyyy, h:mm a') }
+  [NEWLINE]
+  TEST OK to email to clerk? ${ test_filing_available }
+---
+# testing only
+reconsider: True
+code: |
+  if time_check > test_ah_open.minus(hours=1) and time_check < test_ah_close:
+    test_filing_available = True
+  else:
+    test_filing_available = False  
+
 ---
 terms:
   - "advance written notice": |
@@ -4743,6 +4770,12 @@ reconsider: True
 code: |
   new_ah_open = ah_open(current_datetime())
   new_ah_close = ah_close(new_ah_open)
+
+  # testing only
+  test_ah_open = ah_open(time_check)
+  test_ah_close = ah_close(test_ah_open)  
+  # testing only
+  
   new_reg_open = reg_open(current_datetime())
   new_reg_close = reg_close(new_reg_open)
   get_court_hours = True  
