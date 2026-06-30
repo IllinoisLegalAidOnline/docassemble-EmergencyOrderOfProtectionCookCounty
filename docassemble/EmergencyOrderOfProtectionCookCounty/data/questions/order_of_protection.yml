@@ -108,8 +108,8 @@ mandatory: True
 code: |
   nav.set_section('section_intro')
   sees_nav_bar
-  time_check
-  test_screen
+  #time_check
+  #test_screen
   snapshot_start
   instructions
   cook_after_hours
@@ -438,43 +438,42 @@ code: |
     filing_available = False  
 ---
 # testing only
-id: get time
-question: |
-  When do you want to test AH availability?
-fields:
-  - Date and time: time_check
-    datatype: datetime
----
+#id: get time
+#question: |
+#  When do you want to test AH availability?
+#fields:
+#  - Date and time: time_check
+#    datatype: datetime
+#---
 # testing only
-id: test screen
-continue button field: test_screen
-question: |
-  Test screen
-subquestion: |
-  Current time: ${ format_datetime(current_datetime(), format='EEEE, MMMM d, yyyy, h:mm a') }
-  [NEWLINE]
-  AH open: ${ format_datetime(new_ah_open, format='EEEE, MMMM d, yyyy, h:mm a') }
-  [NEWLINE]
-  AH closed: ${ format_datetime(new_ah_close, format='EEEE, MMMM d, yyyy, h:mm a') }
-  [NEWLINE]
-  OK to email to clerk? ${ filing_available }
-
-  TEST time: ${ format_datetime(time_check, format='EEEE, MMMM d, yyyy, h:mm a') }
-  [NEWLINE]
-  TEST AH open: ${ format_datetime(test_ah_open, format='EEEE, MMMM d, yyyy, h:mm a') }
-  [NEWLINE]
-  TEST AH closed: ${ format_datetime(test_ah_close, format='EEEE, MMMM d, yyyy, h:mm a') }
-  [NEWLINE]
-  TEST OK to email to clerk? ${ test_filing_available }
----
+#id: test screen
+#continue button field: test_screen
+#question: |
+#  Test screen
+#subquestion: |
+#  Current time: ${ format_datetime(current_datetime(), format='EEEE, MMMM d, yyyy, h:mm a') }
+#  [NEWLINE]
+#  AH open: ${ format_datetime(new_ah_open, format='EEEE, MMMM d, yyyy, h:mm a') }
+#  [NEWLINE]
+#  AH closed: ${ format_datetime(new_ah_close, format='EEEE, MMMM d, yyyy, h:mm a') }
+#  [NEWLINE]
+#  OK to email to clerk? ${ filing_available }
+#
+#  TEST time: ${ format_datetime(time_check, format='EEEE, MMMM d, yyyy, h:mm a') }
+#  [NEWLINE]
+#  TEST AH open: ${ format_datetime(test_ah_open, format='EEEE, MMMM d, yyyy, h:mm a') }
+#  [NEWLINE]
+#  TEST AH closed: ${ format_datetime(test_ah_close, format='EEEE, MMMM d, yyyy, h:mm a') }
+#  [NEWLINE]
+#  TEST OK to email to clerk? ${ test_filing_available }
+#---
 # testing only
-reconsider: True
-code: |
-  if time_check > test_ah_open.minus(hours=1) and time_check < test_ah_close:
-    test_filing_available = True
-  else:
-    test_filing_available = False  
-
+#reconsider: True
+#code: |
+#  if time_check > test_ah_open.minus(hours=1) and time_check < test_ah_close:
+#    test_filing_available = True
+#  else:
+#    test_filing_available = False  
 ---
 terms:
   - "advance written notice": |
@@ -508,6 +507,17 @@ subquestion: |
   * If you need to exit this program, click the red **Escape** button at the top of the screen.
   * Learn about [**safety while using the Internet**](https://www.thehotline.org/help/tech-social-media-safety/).
 field: sees_nav_bar
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
+  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  </div>
 ---
 id: email preview
 continue button field: email_preview
@@ -682,11 +692,11 @@ subquestion: |
 id: cook after hours option
 continue button field: cook_after_hours
 question: |
-  Cook County after-hours court
+  Cook County After-hours court
 subquestion: |
   **Cook County domestic violence courts have additional hours during nights and weekends.**
   
-  Cook County after-hours court clerks and judges are available **only**:
+  Cook County After-hours court clerks and judges are available **only**:
 
   * Monday through Friday: 9:00 PM to 3:00 AM
   * Saturday and Sunday: 1:00 PM to 6:00 PM
@@ -697,7 +707,18 @@ subquestion: |
   
   You can also use this program to make your forms and bring them to one of the Cook County courthouses during regular business hours.
   
-  ${ collapse_template(cook_courthouse_location_help) } 
+  ${ collapse_template(cook_courthouse_location_help) }
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
+  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  </div>
 ---
 id: cook in person options
 continue button field: cook_in_person
@@ -4381,9 +4402,22 @@ under: |
 
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
+  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  <p>You can email your forms to the clerk one hour before After-hours court opens.</p>
+  </div>
 ---
 #if !filing_available:
 id: get docs screen
+event: get_docs_screen_event
 question: |
   Download forms
 subquestion: |
@@ -4404,7 +4438,6 @@ subquestion: |
   **Note:** If you want to see an after-hours judge, refresh this page when After-hours court is in session. Then follow the instructions to email your forms to the clerk.
   
   Thank you for using ILAO Easy Forms!
-event: get_docs_screen_event
 under: |
   ###### **Worried about doing this on your own?**  
   ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
@@ -4415,7 +4448,17 @@ under: |
 
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
-
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
+  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  </div>
 ---
 id: ending screen
 event: ending_screen
@@ -4696,6 +4739,17 @@ fields:
     rows: 3
     maxlength: 200
     required: False
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
+  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  </div>
 ---
 id: are you sure
 question: |
@@ -4734,6 +4788,17 @@ fields:
     choices: 
       - Yes, I want to email my forms to the clerk now.: True
       - No, I want to get my forms now. I will file them later.: False
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
+  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  </div>
 ---
 template: cook_courthouse_location_help
 subject: |
@@ -4772,8 +4837,8 @@ code: |
   new_ah_close = ah_close(new_ah_open)
 
   # testing only
-  test_ah_open = ah_open(time_check)
-  test_ah_close = ah_close(test_ah_open)  
+  #test_ah_open = ah_open(time_check)
+  #test_ah_close = ah_close(test_ah_open)  
   # testing only
   
   new_reg_open = reg_open(current_datetime())
