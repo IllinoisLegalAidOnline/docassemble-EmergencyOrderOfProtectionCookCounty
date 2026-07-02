@@ -509,8 +509,8 @@ subquestion: |
 field: sees_nav_bar
 pre:
   <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
-  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
   <p>
   <ul>
   <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
@@ -710,8 +710,8 @@ subquestion: |
   ${ collapse_template(cook_courthouse_location_help) }
 pre:
   <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
-  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
   <p>
   <ul>
   <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
@@ -4404,8 +4404,8 @@ under: |
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 pre:
   <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
-  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
   <p>
   <ul>
   <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
@@ -4450,8 +4450,8 @@ under: |
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
 pre:
   <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
-  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
   <p>
   <ul>
   <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
@@ -4503,6 +4503,17 @@ under: |
 buttons:
   - Exit: exit
   - Restart: restart
+pre:
+  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
+  <p>
+  <ul>
+  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
+  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
+  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
+  </ul></p>
+  </div>
 ---
 template: al_user_bundle.send_email_template
 subject: |
@@ -4741,8 +4752,8 @@ fields:
     required: False
 pre:
   <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
-  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
   <p>
   <ul>
   <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
@@ -4790,8 +4801,8 @@ fields:
       - No, I want to get my forms now. I will file them later.: False
 pre:
   <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Holiday hours for After-hours court</h6>
-  <p>After-hours court will observe the following hours over the upcoming Fourth of July weekend:</p>
+  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
+  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
   <p>
   <ul>
   <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
