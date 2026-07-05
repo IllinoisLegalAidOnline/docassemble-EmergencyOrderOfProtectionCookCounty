@@ -108,8 +108,10 @@ mandatory: True
 code: |
   nav.set_section('section_intro')
   sees_nav_bar
+  
   #time_check
   #test_screen
+  
   snapshot_start
   instructions
   cook_after_hours
@@ -445,7 +447,6 @@ code: |
 #  - Date and time: time_check
 #    datatype: datetime
 #---
-# testing only
 #id: test screen
 #continue button field: test_screen
 #question: |
@@ -507,17 +508,6 @@ subquestion: |
   * If you need to exit this program, click the red **Escape** button at the top of the screen.
   * Learn about [**safety while using the Internet**](https://www.thehotline.org/help/tech-social-media-safety/).
 field: sees_nav_bar
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  </div>
 ---
 id: email preview
 continue button field: email_preview
@@ -708,17 +698,6 @@ subquestion: |
   You can also use this program to make your forms and bring them to one of the Cook County courthouses during regular business hours.
   
   ${ collapse_template(cook_courthouse_location_help) }
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  </div>
 ---
 id: cook in person options
 continue button field: cook_in_person
@@ -4402,18 +4381,6 @@ under: |
 
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  <p>You can email your forms to the clerk one hour before After-hours court opens.</p>
-  </div>
 ---
 #if !filing_available:
 id: get docs screen
@@ -4448,17 +4415,6 @@ under: |
 
   &nbsp;
   ${ action_button_html(interview_url(i="docassemble.ILAO:feedback.yml", easy_form_interview=ilao_easy_form_url, easy_form_title=ilao_easy_form_title, easy_form_page=current_context().question_id, easy_form_variable=current_context().variable, local=False,reset=1), label=':comment: Was this program helpful?', color="#181c36", size="md", new_window=True) }
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  </div>
 ---
 id: ending screen
 event: ending_screen
@@ -4503,17 +4459,6 @@ under: |
 buttons:
   - Exit: exit
   - Restart: restart
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  </div>
 ---
 template: al_user_bundle.send_email_template
 subject: |
@@ -4750,17 +4695,6 @@ fields:
     rows: 3
     maxlength: 200
     required: False
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  </div>
 ---
 id: are you sure
 question: |
@@ -4799,17 +4733,6 @@ fields:
     choices: 
       - Yes, I want to email my forms to the clerk now.: True
       - No, I want to get my forms now. I will file them later.: False
-pre:
-  <div class="alert alert-info ilao-info" role="alert" style='background-color${":"} ${"#"}FFCD6E;'>
-  <h6 class="alert-heading">Special holiday hours for July 3 & 4, 2026</h6>
-  <p>After-hours court will observe the following hours over the 2026 Fourth of July weekend:</p>
-  <p>
-  <ul>
-  <li>Friday, July 3 - <strong>OPEN from 1PM to 6PM</strong> (court holiday)</li>
-  <li>Saturday, July 4 - <strong>CLOSED</strong></li>
-  <li>Sunday, July 5 - <strong>OPEN from 1PM to 6PM</strong> (regular hours)</li>
-  </ul></p>
-  </div>
 ---
 template: cook_courthouse_location_help
 subject: |
