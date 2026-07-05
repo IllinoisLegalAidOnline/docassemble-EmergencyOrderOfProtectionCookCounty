@@ -1,27 +1,6 @@
-from docassemble.base.util import format_date, as_datetime
-from datetime import datetime
+from docassemble.base.util import format_date
 
 def ah_open(test_time):
-
-  # special July 3-4, 2026 hours
-  test_time_no_time_zone = test_time.replace(tzinfo=None)
-  
-  range_1_start = datetime(2026, 7, 3, 3, 0, 0)
-  range_1_end = datetime(2026, 7, 3, 18, 0, 0)
-  
-  range_2_start = datetime(2026, 7, 3, 18, 0, 0)
-  range_2_end = datetime(2026, 7, 5, 14, 0, 0)
-  
-  if range_1_start <= test_time_no_time_zone <= range_2_end:
-  
-    if range_1_start <= test_time_no_time_zone < range_1_end:
-      next_ah_open = datetime(2026, 7, 3, 13, 0, 0)
-      return as_datetime(next_ah_open)
-    
-    if range_2_start <= test_time_no_time_zone <= range_2_end:
-      next_ah_open = datetime(2026, 7, 5, 13, 0, 0)
-      return as_datetime(next_ah_open)
-  # end special July 3-4 code block
 
   if test_time.dow <= 5: #weekdays
     if test_time.hour < 3 and test_time.dow != 1:
@@ -73,17 +52,6 @@ def load_court_holidays():
   return holiday_list
 
 def ah_close(next_ah_open):
-
-  # special July 3, 2026 closing time (duration) needed since 7/3 AH is 5 hour shift rather than 6 hour
-  # after 7/3 shift return to normal calculation (next shift is a Sunday 5-hour)
-  next_ah_open_no_time_zone = next_ah_open.replace(tzinfo=None)
-  
-  range_start = datetime(2026, 7, 3, 1, 0, 0)
-  range_end = datetime(2026, 7, 3, 18, 0, 0)
-    
-  if range_start < next_ah_open_no_time_zone < range_end:
-    return as_datetime(next_ah_open.plus(hours=5))  
-  # end special July 3-4 code block
   
   if next_ah_open.dow < 6:
     return next_ah_open.plus(hours=6)
