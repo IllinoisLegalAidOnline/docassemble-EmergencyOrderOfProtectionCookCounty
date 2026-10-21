@@ -21,7 +21,7 @@ review:
       ${ users[0].birthdate }
   - Edit: jurisdiction_type
     button: |
-      **Filing in ${ trial_court.address.county } County because:**
+      **Filing in ${ trial_court_county } County because:**
       
       % if jurisdiction_type['I live here']:
       * I live here
@@ -2051,7 +2051,7 @@ review:
       ${ users[0].birthdate }
   - Edit: jurisdiction_type
     button: |
-      **Filing in ${ trial_court.address.county } County because:**
+      **Filing in ${ trial_court_county } County because:**
       
       % if jurisdiction_type['I live here']:
       * I live here

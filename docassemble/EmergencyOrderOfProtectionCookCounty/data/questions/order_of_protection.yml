@@ -7,9 +7,9 @@ metadata:
 ---
 include:
   - docassemble.AssemblyLine:assembly_line.yml
-  - docassemble.ALToolbox:escape_button.yml  
   - docassemble.ILAO:ilao-interview-framework.yml
   - docassemble.ILAO:shared-basic-questions.yml
+  - docassemble.ALToolbox:escape_button.yml
   - op_review.yml
 ---
 modules:
@@ -18,7 +18,7 @@ modules:
 default screen parts:
   under: |
     ###### **Worried about doing this on your own?**  
-    ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+    ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
     % if not user_logged_in():
     
     [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} **Sign in**](${url_of('login', next=interview_url())}) or [**create**](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -75,7 +75,9 @@ objects:
   - warrant_location_list: ALAddressList.using(there_are_any=True)
   - service_address: ALAddress
   - second_service_address: ALAddress
-  - court_list: ALCourtLoader.using(file_name='docassemble.ILAO:data/sources/il_courts.xlsx')
+
+# removed Oct 2026
+#- court_list: ALCourtLoader.using(file_name='docassemble.ILAO:data/sources/il_courts.xlsx')
 
 ---
 code: |
@@ -125,7 +127,9 @@ code: |
   nav.set_section('section_basic')
   set_progress(10)
   
-  trial_court_index = -1
+  # moved to separate code block
+  # trial_court_index = -1
+  
   if jurisdiction_type.all_false():
     other_jurisdiction_location
     
@@ -365,9 +369,8 @@ code: |
   
   eop 
   #case_number
-  if trial_court_index == -1:
-    if previous_cook_case_type != "none":
-      previous_cook_case_date
+  if previous_cook_case_type != "none":
+    previous_cook_case_date
 
   users[0].phone_number
   if users[0].email_notice == True:
@@ -495,7 +498,7 @@ subquestion: |
 
   This program makes forms that help you ask the court to order someone to stop harming or threatening you, your children, or other household members. The Order of Protection can also require the abuser to stay away from other protected people and locations.
   
-  To learn more, read ILAO's article about [**Orders of Protection**](https://www.illinoislegalaid.org/node/29806).
+  To learn more, read ILAO's article about [**Getting a domestic violence Order of Protection**](https://www.illinoislegalaid.org/node/29806).
   
   <div class="alert alert-info ilao-info" role="alert">
     <h6 class="alert-heading">See a judge on evenings and weekends</h6>
@@ -708,7 +711,7 @@ subquestion: |
 
   ${ collapse_template(cook_courthouse_location_help) } 
 
-  You can also contact the Illinois Domestic Violence Hotline at 877-863-6338. They are available 24/7 and can help with:
+  You can also contact the Illinois Domestic Violence Hotline at <a href="tel:8778636338">**(877) 863-6338**</a>. They are available 24/7 and can help with:
   
   * Emergency transportation,
   * Emergency housing,
@@ -744,44 +747,49 @@ buttons:
   - Exit: exit
   - Restart: restart
 ---
-depends on:
-  - trial_court_index
 code: |
-  trial_court = court_list.as_court('trial_court', trial_court_index)
+  trial_court_county = "Cook"
+  trial_court_index = -1
 ---
-code: |
-  def court_county_lookup(lowercase=False):
-    all_court_counties = court_list._load_courts()['address_county'].items()
-    filtered_courts = [(-1, "cook")] if lowercase else [(-1, "Cook")]
-    for court in all_court_counties:
-      if court[1] != "Cook":
-        court_name = court[1].lower() if lowercase else court[1]
-        filtered_courts.append((court[0],court_name))
-    return sorted( filtered_courts, key=lambda y: y[1])
----
-depends on:
-  - trial_court_index
-code: |
-  if trial_court_index == -1:
-    trial_court = court_list.as_court('trial_court', 15)
-    trial_court.address.county = "Cook"
-  else:
-    trial_court = court_list.as_court('trial_court', trial_court_index)
+# removed as part of Oct 2026 code update
+#depends on:
+#  - trial_court_index
+#code: |
+#  trial_court = court_list.as_court('trial_court', trial_court_index)
+#---
+#code: |
+#  def court_county_lookup(lowercase=False):
+#    all_court_counties = court_list._load_courts()['address_county'].items()
+#    filtered_courts = [(-1, "cook"), (-2, "kane")] if lowercase else [(-1, "Cook"), (-2, "Kane")]
+#    for court in all_court_counties:
+#      if court[1] != "Cook" and court[1] != "Kane":
+#        court_name = court[1].lower() if lowercase else court[1]
+#        filtered_courts.append((court[0],court_name))
+#    return sorted( filtered_courts, key=lambda y: y[1])
+#---  
+#depends on:
+#  - trial_court_index
+#code: |
+#  if trial_court_index == -1:
+#    trial_court = court_list.as_court('trial_court', 15)
+#    trial_court_county = "Cook"
+#  else:
+#    trial_court = court_list.as_court('trial_court', trial_court_index)
 ---
 id: jurisdiction
 #continue button field: jurisdiction
 question: |
-  Why do you want to file in ${ trial_court.address.county } County?
+  Why do you want to file in ${ trial_court_county } County?
 subquestion: |
   Check all that apply.
 fields:
   - no label: jurisdiction_type
     datatype: checkboxes
     choices:
-      - I live in ${ trial_court.address.county } County.: I live here
-      - The person I am filing against lives in ${ trial_court.address.county } County.: Respondent lives here
-      - The abuse took place in ${ trial_court.address.county } County.: Abuse was here
-      - I am in ${ trial_court.address.county } County to avoid abuse elsewhere.: Abuse was elsewhere
+      - I live in ${ trial_court_county } County.: I live here
+      - The person I am filing against lives in ${ trial_court_county } County.: Respondent lives here
+      - The abuse took place in ${ trial_court_county } County.: Abuse was here
+      - I am in ${ trial_court_county } County to avoid abuse elsewhere.: Abuse was elsewhere
 ---
 id: not proper location
 event: other_jurisdiction_location
@@ -946,7 +954,7 @@ question: |
 subquestion: |
   You can file for an Order of Protection only if the person you want protected has a qualifying relationship with the abuser.
   
-  A Stalking No Contact Order might work better in your situation. Read ILAO's article about [**Getting a Stalking No Contact Order**](https://www.illinoislegalaid.org/node/30216) to learn more.
+  A Stalking No Contact Order might work better in your situation. Read ILAO's article about [**Protection from stalking**](https://www.illinoislegalaid.org/node/30216) to learn more.
   
 buttons:
   - Exit: exit
@@ -1217,7 +1225,7 @@ subject: |
 content: |  
   If ${ x.name.full()} has not lived in Illinois or the state you select for the past 6 months, you may want to talk with a lawyer. There are laws that affect which state courts can settle things like child custody. If the child is under 6 months old, select where the child lived since birth.
   
-  Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate. You can also use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
+  Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate. You can also use [**Get Legal Help**](https://www.illinoislegalaid.org/get-legal-help) to find free or low-cost legal services in your area.
 ---
 template: legal_parentage_help
 subject: |
@@ -1353,7 +1361,7 @@ fields:
       states_list()
   - County: other_ops[i].county
     code: |
-      court_list._load_courts()["address_county"].unique()      
+      il_county_list     
     js show if: |
       val('other_ops[i].state') === "IL"
   - County: other_ops[i].county
@@ -1458,7 +1466,7 @@ fields:
       states_list()
   - County: other_cases[i].county
     code: |
-      court_list._load_courts()["address_county"].unique()      
+      il_county_list      
     js show if: |
       val('other_cases[i].state') === "IL"
   - County: other_cases[i].county
@@ -3348,7 +3356,11 @@ id: restrict other property
 question: |
   Additional property protections
 subquestion: |
+  % if award_personal_property:
   We already asked about property that you want to keep or be returned to you. You mentioned these items: ${comma_and_list([item.name.text for item in petitioner_personal_property])}.
+  % else:
+  We already asked about property that you want to keep or be returned to you.
+  % endif
   
   The court can also order ${other_parties[0].name.full()} not to take, hide, damage, or dispose of property. This can include personal property like your car or real estate like your apartment or house. It can include the spaces inside and outside the property as well as things that are inside the property.
 
@@ -3358,6 +3370,7 @@ fields:
     datatype: yesnoradio
   - note: |
       **Important:** If you want to protect the items listed above and other property from ${other_parties[0].name_full()}, select **Yes**.
+    show if: award_personal_property
 ---
 id: restricted property
 question: |
@@ -3632,7 +3645,7 @@ content: |
   * If you ask for a search warrant, this will involve additional contact with law enforcement.
   * The search warrant process is different in every county. Local courts and law enforcement may have their own process and forms to get firearms relief.
 
-  You can read these [**important information pages**](${ url_of('op_firearms_info.pdf') }) to get some guidance, but it can be helpful to talk with a domestic violence advocate when deciding what to do. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  You can read these [**important information pages**](${ url_of('op_firearms_info.pdf') }) to get some guidance, but it can be helpful to talk with a domestic violence advocate when deciding what to do. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
 
   The information pages are also included in the instructions you can download at the end of this program.
 ---
@@ -4380,7 +4393,7 @@ subquestion: |
   Thank you for using ILAO Easy Forms!
 under: |
   ###### **Worried about doing this on your own?**  
-  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -4414,7 +4427,7 @@ subquestion: |
   Thank you for using ILAO Easy Forms!
 under: |
   ###### **Worried about doing this on your own?**  
-  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -4455,7 +4468,7 @@ subquestion: |
   Thank you for using ILAO Easy Forms!
 under: |
   ###### **Worried about doing this on your own?**  
-  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -4680,7 +4693,7 @@ subquestion: |
   
   If you send your forms at other times, the clerk may not see your forms. **You must send the email when After-hours court is open or in the hour before it opens.**
 
-  **Note:** It may take up to an hour or longer after you email your forms before a judge is ready to see you. Court staff will provide you with the after-hours Zoom information when it is time for your hearing. If you are not available when they contact you, you will have to reschedule. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  **Note:** It may take up to an hour or longer after you email your forms before a judge is ready to see you. Court staff will provide you with the after-hours Zoom information when it is time for your hearing. If you are not available when they contact you, you will have to reschedule. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
 
   For information about your next court date after today's after-hours hearing, see the "Next Steps" document. This is with your downloadble forms.
   
@@ -4718,7 +4731,7 @@ subquestion: |
 
   If you send your forms at other times, the clerk may not see your forms. **You must send the email when After-hours court is open or in the hour before it opens.**
 
-  **Note:** It may take up to an hour or longer before a judge is ready to see you.  If you are not available when they contact you, you will have to reschedule. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  **Note:** It may take up to an hour or longer before a judge is ready to see you.  If you are not available when they contact you, you will have to reschedule. Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
 
   You can also bring your forms to the courthouse and file during regular business hours.
 
@@ -4804,7 +4817,7 @@ subquestion: |
   Thank you for using ILAO Easy Forms!
 under: |
   ###### **Worried about doing this on your own?**  
-  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -4825,7 +4838,7 @@ subquestion: |
   Thank you for using ILAO Easy Forms!
 under: |
   ###### **Worried about doing this on your own?**  
-  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at 877-863-6338 (877-TO END DV) to talk with an advocate.
+  ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
   % if not user_logged_in():
   
   [${fa_icon("sign-in-alt", color="#0079d0", size="sm")} Sign-in](${url_of('login', next=interview_url())}) or [create](${url_of('register', next=interview_url())}) an ILAO Easy Form account to save your progress (optional).
@@ -5011,7 +5024,7 @@ attachment:
   #rendering font: "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
   pdf template file: op_petition.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "civil_proceeding": True
     - "petitioner": |
         % if users[0].birthdate != "":
@@ -5944,7 +5957,7 @@ attachment:
   editable: False
   pdf template file: op_schools.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner": ${ users[0].name.full() }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "obo_high_risk_adult_cb": ${ True if protect_high_risk_adult else '' }
@@ -5991,7 +6004,7 @@ attachment:
   editable: False
   pdf template file: additional_incidents.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner": ${ users[0].name.full() }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "obo_high_risk_adult_cb": ${ True if protect_high_risk_adult else '' }
@@ -6039,7 +6052,7 @@ attachment:
   editable: False
   pdf template file: additional_cases.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner": ${ users[0].name.full() }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "obo_high_risk_adult_cb": ${ True if protect_high_risk_adult else '' }
@@ -6162,7 +6175,7 @@ attachment:
   editable: False
   pdf template file: affidavit_pt_supervisor.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner__1": ${ users[0].name.full() }
     - "respondent": ${other_parties[0].name.full()}
     - "protect_petitioner": ${ protect_petitioner }
@@ -6187,7 +6200,7 @@ attachment:
   editable: False
   pdf template file: efiling_exemption.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner__1": ${ users[0].name.full() }
     - "respondent": ${other_parties[0].name.full()}
     - "reason_dv": ${ True }
@@ -6206,8 +6219,8 @@ attachment:
   editable: False
   pdf template file: op_summons.pdf
   fields:
-    - "county__2": ${ trial_court.address.county }
-    - "county": ${ trial_court.address.county }
+    - "county__2": ${ trial_court_county }
+    - "county": ${ trial_court_county }
     - "petitioner": ${ users[0].name.full() }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "obo_high_risk_adult_cb": ${ True if protect_high_risk_adult else '' }
@@ -6314,7 +6327,7 @@ attachment:
   editable: True
   pdf template file: emergency_op.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "civil_proceeding": True
     - "petitioner": |
         % if users[0].birthdate != "":
@@ -7187,7 +7200,7 @@ attachment:
   editable: True
   pdf template file: plenary_op.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "civil_proceeding": True
     - "petitioner": |
         % if users[0].birthdate != "":
@@ -8375,7 +8388,7 @@ attachment:
   editable: False
   pdf template file: op_warrant_info_sheet.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner": ${ users[0].name.full() }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "respondent": ${other_parties[0].name.full()}
@@ -8426,7 +8439,7 @@ attachment:
   editable: False
   pdf template file: op_warrant.pdf
   fields:
-    - "county": ${ trial_court.address.county }
+    - "county": ${ trial_court_county }
     - "petitioner": ${ users[0].name.full() }
     - "obo_minor_cb": ${ True if protect_obo_minor else '' }
     - "respondent": ${other_parties[0].name.full()}
