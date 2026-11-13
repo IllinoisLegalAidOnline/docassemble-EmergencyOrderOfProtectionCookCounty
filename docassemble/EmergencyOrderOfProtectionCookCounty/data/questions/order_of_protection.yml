@@ -16,6 +16,9 @@ modules:
   - .cook_court_hours
 ---
 default screen parts:
+  pre: |
+    ###### **Email to clerk unavailable**
+    ###### **Thursday, Nov. 12, 2026 to Friday, Nov. 13, 2026**
   under: |
     ###### **Worried about doing this on your own?**  
     ###### Call the [**Illinois Domestic Violence Hotline**](https://the-network.org/get-help/) at <a href="tel:8778636338">**(877) 863-6338**</a> (877-TO END DV) to talk with an advocate.
