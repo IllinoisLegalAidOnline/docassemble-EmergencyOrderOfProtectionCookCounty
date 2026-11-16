@@ -435,12 +435,20 @@ code: |
   reconsider('snapshot_interview_state')
   snapshot_email = True 
 ---
+#email to clerk hours set to always available for testing 11/16/26
+#remove this block and restore the following for production
 reconsider: True
 code: |
-  if current_datetime() > new_ah_open.minus(hours=1) and current_datetime() < new_ah_close:
-    filing_available = True
-  else:
-    filing_available = False  
+  filing_available = True
+---
+#email to clerk hours set to always available for testing 11/16/26
+#restore this block and remove the previous for production
+#reconsider: True
+#code: |
+#  if current_datetime() > new_ah_open.minus(hours=1) and current_datetime() < new_ah_close:
+#    filing_available = True
+#  else:
+#    filing_available = False  
 ---
 # testing only
 #id: get time
